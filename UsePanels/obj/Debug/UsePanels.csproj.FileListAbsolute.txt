@@ -1,0 +1,14 @@
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\UsePanels.exe.config
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\UsePanels.exe
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\UsePanels.pdb
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\Interop.MapWinGIS.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\AxInterop.MapWinGIS.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.csprojAssemblyReference.cache
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\Interop.MapWinGIS.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\AxInterop.MapWinGIS.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.csproj.ResolveComReference.cache
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.Form1.resources
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.Properties.Resources.resources
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.csproj.GenerateResource.cache
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.exe
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.pdb
