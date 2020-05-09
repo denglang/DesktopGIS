@@ -16,10 +16,14 @@ namespace UsePanels
     public partial class Form1 : Form
     {
         public static Dictionary<string, int> layerControl = new Dictionary<string, int>();
+        public bool drag;
+        public int mouseX;
+        public int mouseY;
         public Form1()
-        {
+         {
             InitializeComponent();
-            axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
+            new GlobalSettings() { AllowProjectionMismatch = true, ReprojectLayersOnAdding = true };
+            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
             axMap1.KnownExtents = tkKnownExtents.keUSA;
             panel1.Hide();
         }
@@ -40,7 +44,7 @@ namespace UsePanels
             Shapefile shp = new Shapefile();
             //shp.Open(@"C:\Work\GIS\data\states.shp");
             int layerHandle = getLayerHandle();
-
+            string layerName = treeView1.SelectedNode.Text;
             shp = axMap1.get_Shapefile(layerHandle);
             // GeoProjection proj = new GeoProjection();
             // proj.SetGoogleMercator();
@@ -49,9 +53,10 @@ namespace UsePanels
             // shp.DefaultDrawingOptions.FillTransparency = 0;
             dataGridView1.DataSource = null;
             dataGridView1.Rows.Clear();
+            dataGridView1.Columns.Clear();
+            dataGridView1.Columns.Add("ID", "ID");
             for (int i = 0; i < shp.NumFields; i++)
-            {
-                dataGridView1.Columns.Add("ID", "ID");
+            {                
                 dataGridView1.Columns.Add(shp.Field[i].Name, shp.Field[i].Name);
             }
 
@@ -65,6 +70,7 @@ namespace UsePanels
                     dataGridView1.Rows[i].Cells[j].Value = shp.CellValue[j, i];
                 }
             }
+            lblAttributeTitle.Text = layerName + " with "+  shp.NumShapes.ToString() + " rows";
             panel1.Show();
         }
 
@@ -82,12 +88,12 @@ namespace UsePanels
                 axMap1.GrabProjectionFromData = true;
 
                 //**************************************************
-                //GeoProjection proj = new GeoProjection();
-                //proj.ReadFromFile(filename);
+                // GeoProjection proj = new GeoProjection();
+                // proj.ReadFromFile(filename);
                 //lblMapProjection.Text = proj.Name;
                 //lblMapProjection.Text = axMap1.Projection.ToString();
                 //***********************************************
-                //axMap1.Projection = tkMapProjection
+                //axMap1.Projection = tkMapProjection;
                 //MessageBox.Show(axMap1.Projection.ToString());
 
                 int layerHandle = -1;
@@ -436,6 +442,54 @@ namespace UsePanels
             }
             axMap1.Refresh();
             axMap1.Redraw();
+        }
+
+        private void panel1_MouseDown(object sender, MouseEventArgs e)
+        {
+            drag = true;
+            mouseX = Cursor.Position.X - this.Left;
+            mouseY = Cursor.Position.Y - this.Top; 
+        }
+
+        private void panel1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (drag)
+            {
+                this.Left = Cursor.Position.X - mouseX;
+                this.Top = Cursor.Position.Y - mouseY;
+            }
+        }
+
+        private void panel1_MouseUp(object sender, MouseEventArgs e)
+        {
+            drag = false;
+            //panel1.MinimumSize=10;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            axMap1.ZoomIn(20.00);
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            axMap1.ZoomOut(20.00);
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            axMap1.CursorMode = tkCursorMode.cmPan;
+        }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            axMap1.CursorMode = tkCursorMode.cmMeasure;
+            axMap1.Measuring.MeasuringType = tkMeasuringType.MeasureArea;
         }
     }
 }
