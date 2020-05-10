@@ -41,11 +41,11 @@ namespace UsePanels
 
         private void openAttributeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Shapefile shp = new Shapefile();
+            Shapefile sf = new Shapefile();
             //shp.Open(@"C:\Work\GIS\data\states.shp");
             int layerHandle = getLayerHandle();
             string layerName = treeView1.SelectedNode.Text;
-            shp = axMap1.get_Shapefile(layerHandle);
+            sf = axMap1.get_Shapefile(layerHandle);
             // GeoProjection proj = new GeoProjection();
             // proj.SetGoogleMercator();
             // shp.Reproject(proj, 1);
@@ -54,23 +54,58 @@ namespace UsePanels
             dataGridView1.DataSource = null;
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.Columns.Add("ID", "ID");
-            for (int i = 0; i < shp.NumFields; i++)
-            {                
-                dataGridView1.Columns.Add(shp.Field[i].Name, shp.Field[i].Name);
-            }
+            //dataGridView1.Columns.Add("ID","ID");
 
-            for (int i = 0; i < shp.NumFields; i++)
+            //for (int i = 0; i < shp.NumFields; i++)
+            //{                
+            //    dataGridView1.Columns.Add(shp.Field[i].Name, shp.Field[i].Name);
+            //}
+
+            //for (int i = 0; i < shp.NumFields; i++)
+            //{
+            //    dataGridView1.Rows.Add();
+            //    dataGridView1.Rows[i].Cells[0].Value = i;
+
+            //    for (int j = 1; j < shp.NumFields; j++)
+            //    {
+            //        dataGridView1.Rows[i].Cells[j].Value = shp.CellValue[j, i];
+            //    }
+            //}
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("ID"));
+            for (int i = 0; i < sf.NumFields; i++)
             {
-                dataGridView1.Rows.Add();
-                dataGridView1.Rows[i].Cells[0].Value = i;
 
-                for (int j = 1; j < shp.NumFields; j++)
+                var s = sf.get_Field(i).Name.ToString();
+               
+                dt.Columns.Add(new DataColumn(s));
+                //MessageBox.Show(sf.get_Field(i).Name.ToString());
+                DataRow dr = null;
+                for (int j = 0; j < sf.NumShapes; j++)
                 {
-                    dataGridView1.Rows[i].Cells[j].Value = shp.CellValue[j, i];
+                    //MessageBox.Show(sf.get_CellValue(i, j).ToString());
+                    dr = dt.NewRow();
+                    dr["ID"] = j;
+
+                    if (i == 0)
+                    {
+                        dr[s] = sf.get_CellValue(i, j);
+                        dt.Rows.Add(dr);
+                    }
+                    else
+                    {
+                        //DataRow newDr = dt.Rows[i];
+                        dt.Rows[j][s] = sf.get_CellValue(i, j);
+                    }
                 }
+
             }
-            lblAttributeTitle.Text = layerName + " with "+  shp.NumShapes.ToString() + " rows";
+            if (dt.Rows.Count > 0)
+            {
+                dataGridView1.DataSource = dt;
+            }
+            /////////////////////////////////////////
+            lblAttributeTitle.Text = layerName + " with "+  sf.NumShapes.ToString() + " rows";
             panel1.Show();
         }
 
@@ -188,6 +223,14 @@ namespace UsePanels
                     treeView1.Nodes.Add(N);
                     N.Checked = true;
                     N.SelectedImageIndex = N.ImageIndex;
+
+                    ShapeDrawingOptions options = sf.DefaultDrawingOptions;
+                    Utils utils = new Utils();
+
+                    //standard fill
+                    options.FillType = tkFillType.ftStandard;
+                    options.FillColor = utils.ColorByName(tkMapColor.Red);
+                    options.FillTransparency = 100;
 
                     //ColorCodeShape(sf);
                     //Utils utils = new Utils();
