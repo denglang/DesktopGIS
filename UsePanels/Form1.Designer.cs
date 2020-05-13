@@ -49,6 +49,8 @@
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.removeLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeAllLayersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -147,14 +149,17 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(177, 614);
             this.treeView1.TabIndex = 3;
+            this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.zoomToLayerToolStripMenuItem,
-            this.openAttributeToolStripMenuItem});
+            this.openAttributeToolStripMenuItem,
+            this.removeLayerToolStripMenuItem,
+            this.removeAllLayersToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(154, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 114);
             // 
             // zoomToLayerToolStripMenuItem
             // 
@@ -237,6 +242,20 @@
             this.toolStripButton4.Text = "toolStripButton4";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
+            // removeLayerToolStripMenuItem
+            // 
+            this.removeLayerToolStripMenuItem.Name = "removeLayerToolStripMenuItem";
+            this.removeLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeLayerToolStripMenuItem.Text = "Remove Layer";
+            this.removeLayerToolStripMenuItem.Click += new System.EventHandler(this.removeLayerToolStripMenuItem_Click);
+            // 
+            // removeAllLayersToolStripMenuItem
+            // 
+            this.removeAllLayersToolStripMenuItem.Name = "removeAllLayersToolStripMenuItem";
+            this.removeAllLayersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeAllLayersToolStripMenuItem.Text = "Remove All Layers";
+            this.removeAllLayersToolStripMenuItem.Click += new System.EventHandler(this.removeAllLayersToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -286,6 +305,8 @@
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
         private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripMenuItem removeLayerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeAllLayersToolStripMenuItem;
     }
 }
 

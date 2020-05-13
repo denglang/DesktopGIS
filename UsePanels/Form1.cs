@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using AxMapWinGIS;
 using MapWinGIS;
-using AxMapWinGIS;
+using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace UsePanels
 {
@@ -19,9 +15,11 @@ namespace UsePanels
         public bool drag;
         public int mouseX;
         public int mouseY;
+        int n = 0;
         public Form1()
          {
             InitializeComponent();
+
             new GlobalSettings() { AllowProjectionMismatch = true, ReprojectLayersOnAdding = true };
             axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
             axMap1.KnownExtents = tkKnownExtents.keUSA;
@@ -105,7 +103,7 @@ namespace UsePanels
                 dataGridView1.DataSource = dt;
             }
             /////////////////////////////////////////
-            lblAttributeTitle.Text = layerName + " with "+  sf.NumShapes.ToString() + " rows";
+            lblAttributeTitle.Text = layerName + ", with "+  sf.NumShapes.ToString() + " rows";
             panel1.Show();
         }
 
@@ -132,7 +130,7 @@ namespace UsePanels
                 //MessageBox.Show(axMap1.Projection.ToString());
 
                 int layerHandle = -1;
-
+               
                 string fname = "";
 
                 if (filename.Length > 0 && filename.Contains(".shp"))
@@ -151,8 +149,13 @@ namespace UsePanels
                 }
                 catch (ArgumentException)
                 {
+                    if (n == 0) n += 1;
+                    else n += 2;
                     Console.WriteLine("An element with Key = " + fname + " already exists, adding a duplicate layer");
-                    //layerControl.Add(fname + "_2", layerHandle);
+                    fname = fname + "("+n.ToString()+")";
+                    //if (layerControl[fname]>-1) {
+                        layerControl.Add(fname, layerHandle+1000+n);
+                   // }
                 }
 
                 ImageList myImageList = new ImageList();
@@ -163,11 +166,11 @@ namespace UsePanels
                 myImageList.Images.Add(myImage2);
                 myImageList.Images.Add(myImage3);
                 treeView1.ImageList = myImageList;
+                treeView1.CheckBoxes = true; //show checkbox of each node
 
                 // MessageBox.Show(axMap1.get_LayerFilename(layerHandle));
                 //MessageBox.Show(axMap1.get_LayerDescription(layerHandle));
                 // string layerName = Path.GetFileNameWithoutExtension(pa
-
 
                 if (layerHandle == -1)
                 {
@@ -191,7 +194,7 @@ namespace UsePanels
                     N.ImageIndex = 1;
                     //treeView1.Nodes
                     treeView1.Nodes.Add(N);
-                    N.Checked = true;
+                    //N.Checked = true;
                     N.SelectedImageIndex = N.ImageIndex;
                     ColorCodeShape(sf);
                     //    //Utils utils = new Utils();                  
@@ -203,7 +206,7 @@ namespace UsePanels
                     TreeNode N = new TreeNode(fname);
                     N.ImageIndex = 0;
                     treeView1.Nodes.Add(N);
-                    N.Checked = true;
+                    ////N.Checked = true;
                     N.SelectedImageIndex = N.ImageIndex; //so when selected, the image won't change
                     //ColorCodeShape(sf);
                     Utils utils = new Utils();
@@ -221,7 +224,7 @@ namespace UsePanels
                     TreeNode N = new TreeNode(fname);
                     N.ImageIndex = 2;
                     treeView1.Nodes.Add(N);
-                    N.Checked = true;
+                    //N.Checked = true;
                     N.SelectedImageIndex = N.ImageIndex;
 
                     ShapeDrawingOptions options = sf.DefaultDrawingOptions;
@@ -252,7 +255,10 @@ namespace UsePanels
 
         private void dataGridView1_MouseUp(object sender, MouseEventArgs e)
         {
-            int handle = getLayerHandle();
+            string layerName = lblAttributeTitle.Text.Split(',')[0];
+            //MessageBox.Show(layerName);
+            //int handle = getLayerHandle();
+            int handle = layerControl[layerName];
             var sf = new Shapefile();
             sf = axMap1.get_Shapefile(handle);
             sf.SelectNone();
@@ -533,6 +539,74 @@ namespace UsePanels
         {
             axMap1.CursorMode = tkCursorMode.cmMeasure;
             axMap1.Measuring.MeasuringType = tkMeasuringType.MeasureArea;
+        }
+
+        private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            int layerHandle = -1;
+            //here we cannot call getlayerHandle, it doesn't get populated yet,
+            //we use e.Index to get the layerHandle
+            //if (layerControl.Count == 1)
+            //{
+                //    //layerHandle = e.Node.Index;
+                layerHandle = layerControl[e.Node.Text];
+                // axMap1.set_LayerDynamicVisibility(layerHandle, false);
+                if (e.Node.Checked) {
+                    if (axMap1.get_LayerVisible(layerHandle)) { 
+                        axMap1.set_LayerVisible(layerHandle, true);
+                } else axMap1.set_LayerVisible(layerHandle, true);
+            }
+            else axMap1.set_LayerVisible(layerHandle, false);
+            // } else {
+
+            // List<TreeNode> checked_nodes = new List<TreeNode>();
+            //foreach (TreeNode node in treeView1.Nodes)
+            // {
+            //if (node.Checked) checked_nodes.Add(node);
+            //layerHandle = layerControl[node.Text];
+            ////MessageBox.Show(node.Text);
+            //if (node.Checked)
+            //{
+            //    axMap1.set_LayerVisible(layerHandle, true);
+            //}
+            //else
+            //{
+            //    axMap1.set_LayerVisible(layerHandle, false);
+            //}
+            // }
+            //}
+            //axMap1.Redraw();
+            //foreach (TreeNode N in checked_nodes)
+            //{
+            //    layerHandle = layerControl[N.Text];
+            //    axMap1.set_LayerDynamicVisibility(layerHandle, true);
+            //}
+        }
+
+        private void removeAllLayersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            axMap1.RemoveAllLayers();
+            treeView1.Nodes.Clear();
+            layerControl.Clear();
+        }
+
+        private void removeLayerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (KeyValuePair<string, int> kvp in layerControl)
+            {
+                //MessageBox.Show(kvp.Key +","+ kvp.Value.ToString());
+                Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+            }
+            string layerName = treeView1.SelectedNode.Text;
+            if(layerControl[layerName]!=-1) {
+                axMap1.RemoveLayer(layerControl[layerName]);
+                layerControl.Remove(layerName);
+                treeView1.SelectedNode.Remove();
+            } else
+            {
+                MessageBox.Show(layerName + " is not found in map layer control; No layer removed.");
+                return; 
+            }
         }
     }
 }
