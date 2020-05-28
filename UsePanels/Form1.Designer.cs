@@ -61,6 +61,7 @@
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.btnIdentify = new System.Windows.Forms.ToolStripButton();
+            this.chkBox_addBaseMap = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -175,20 +176,20 @@
             // aRDToShapefileToolStripMenuItem
             // 
             this.aRDToShapefileToolStripMenuItem.Name = "aRDToShapefileToolStripMenuItem";
-            this.aRDToShapefileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aRDToShapefileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.aRDToShapefileToolStripMenuItem.Text = "ARD to Shapefile";
             this.aRDToShapefileToolStripMenuItem.Click += new System.EventHandler(this.aRDToShapefileToolStripMenuItem_Click);
             // 
             // cSVToShapefileToolStripMenuItem
             // 
             this.cSVToShapefileToolStripMenuItem.Name = "cSVToShapefileToolStripMenuItem";
-            this.cSVToShapefileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cSVToShapefileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.cSVToShapefileToolStripMenuItem.Text = "CSV to Shapefile";
             // 
             // shapefileToKMLToolStripMenuItem
             // 
             this.shapefileToKMLToolStripMenuItem.Name = "shapefileToKMLToolStripMenuItem";
-            this.shapefileToKMLToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.shapefileToKMLToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.shapefileToKMLToolStripMenuItem.Text = "Shapefile to KML";
             // 
             // selectionToolStripMenuItem
@@ -352,11 +353,23 @@
             this.btnIdentify.ToolTipText = "Identify";
             this.btnIdentify.Click += new System.EventHandler(this.btnIdentify_Click);
             // 
+            // chkBox_addBaseMap
+            // 
+            this.chkBox_addBaseMap.AutoSize = true;
+            this.chkBox_addBaseMap.Location = new System.Drawing.Point(305, 28);
+            this.chkBox_addBaseMap.Name = "chkBox_addBaseMap";
+            this.chkBox_addBaseMap.Size = new System.Drawing.Size(107, 17);
+            this.chkBox_addBaseMap.TabIndex = 6;
+            this.chkBox_addBaseMap.Text = "Toggle BaseMap";
+            this.chkBox_addBaseMap.UseVisualStyleBackColor = true;
+            this.chkBox_addBaseMap.CheckedChanged += new System.EventHandler(this.chkBox_addBaseMap_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1092, 716);
+            this.Controls.Add(this.chkBox_addBaseMap);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.axMap1);
@@ -413,6 +426,7 @@
         private System.Windows.Forms.ToolStripMenuItem selectByLocationToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton btnIdentify;
         private System.Windows.Forms.ToolStripMenuItem openImageToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkBox_addBaseMap;
     }
 }
 

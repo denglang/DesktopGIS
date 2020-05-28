@@ -851,15 +851,15 @@ namespace UsePanels
             string path = "";
             Cursor.Current = Cursors.WaitCursor;
 
-            if (openFile("ard")[0] != null)
-            {
+            //if (openFile("ard")[0] != null)
+           // {
                 path = openFile("ard")[0];
 
-            }
-            else
-            {
-                return;
-            }
+           // }
+            //else
+            //{
+            //    return;
+            //}
             readARD ra = new readARD(path);
 
             Shapefile sf = new Shapefile();
@@ -989,10 +989,19 @@ namespace UsePanels
             } //while (totalLength-d >0);
             Cursor.Current = Cursors.Default;
             string fname = Path.GetFileName(path).Replace(".ard", ".shp");
+            //string f = @"C:\work\GIS\data" + fname;
+            string f = "";
+            SaveFileDialog sfdialog = new SaveFileDialog();
+            sfdialog.Filter = "Shape File|*.shp";
+            sfdialog.FileName = fname;
+            sfdialog.Title = "Save Shapefile";
 
-            
-
-            string f = @"C:\work\GIS\data" + fname;
+            if (sfdialog.ShowDialog() == DialogResult.OK)
+            {
+              
+                f = sfdialog.FileName;
+            }
+           
             //File.Delete(f);
             //deleteFiles(f);
             // MessageBox.Show(f);
@@ -1006,6 +1015,56 @@ namespace UsePanels
             else
             {
                 MessageBox.Show("No shapefile created!");
+            }
+        }
+
+        public void addArcGISService()
+        {
+            int ID = (int)tkTileProvider.ProviderCustom;
+            //add custom provider definition
+
+            axMap1.Tiles.Providers.Add(ID, "ESRI",
+                "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{zoom}/{y}/{x}",
+                //"https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{zoom}/{y}/{x}",
+                tkTileProjection.SphericalMercator, 0, 19,
+                "Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community");
+
+            //set custom provider
+            axMap1.Tiles.ProviderId = ID;
+
+            //string fname = "World_Imagery";
+            axMap1.Redraw3(tkRedrawType.RedrawSkipAllLayers, true);
+            
+        }
+
+        public void removeArcGISService()
+        {
+            int ID = (int)tkTileProvider.ProviderCustom;
+            //add custom provider definition
+
+            axMap1.Tiles.Providers.Clear(true);
+            axMap1.Tiles.Providers.Add(ID, "ESRI", "", tkTileProjection.SphericalMercator, 0, 19);
+            //axMap1.Tiles.Providers.Add(ID, "ESRI",
+            //    "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{zoom}/{y}/{x}",
+            //    tkTileProjection.SphericalMercator, 0, 19,
+            //    "Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community");
+
+            //set custom provider
+            axMap1.Tiles.ProviderId = ID;
+
+            //string fname = "World_Imagery";
+            axMap1.Redraw3(tkRedrawType.RedrawSkipAllLayers, true);           
+        }
+
+        private void chkBox_addBaseMap_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkBox_addBaseMap.Checked == true)
+            {
+                addArcGISService();
+            }
+            else
+            {
+                removeArcGISService();
             }
         }
     }
