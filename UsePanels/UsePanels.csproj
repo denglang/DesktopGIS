@@ -33,6 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AmesAnalysis">
+      <HintPath>..\AmesDLL20190812_Transtec\AmesAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="AmesDataFormat">
+      <HintPath>..\AmesDLL20190812_Transtec\AmesDataFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="AmesFileFormats">
+      <HintPath>..\AmesDLL20190812_Transtec\AmesFileFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="AmesPackets">
+      <HintPath>..\AmesDLL20190812_Transtec\AmesPackets.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +56,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnitsLib">
+      <HintPath>..\AmesDLL20190812_Transtec\UnitsLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">
@@ -52,10 +67,19 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="images\Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -107,8 +131,29 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="images\" />
+    <Content Include="images\Add.PNG" />
+    <Content Include="images\FixedZoomIN.PNG" />
+    <Content Include="images\FixedZoomOut.PNG" />
+    <Content Include="images\identify.PNG" />
+    <Content Include="images\Image.PNG" />
+    <Content Include="images\Line.PNG" />
+    <Content Include="images\Measure.PNG" />
+    <Content Include="images\openFile.PNG" />
+    <Content Include="images\Pan.PNG" />
+    <Content Include="images\Point.PNG" />
+    <Content Include="images\polygon.PNG" />
+    <Content Include="images\SelectShape.PNG" />
+    <Content Include="images\zoom2All.PNG" />
+    <Content Include="images\Zoom2NextExtent.PNG" />
+    <Content Include="images\zoomIn.PNG" />
+    <Content Include="images\zoomOut.PNG" />
+    <Content Include="images\ZoomPrev.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"
+if exist "$(TargetPath)" if not exist "$(TargetPath).locked" move "$(TargetPath)" "$(TargetPath).locked"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -12,3 +12,10 @@ C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.Properties.
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.csproj.GenerateResource.cache
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.exe
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.pdb
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.images.Resource.resources
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\AmesAnalysis.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\AmesDataFormat.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\AmesFileFormats.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\AmesPackets.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\UnitsLib.dll
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.csproj.CopyComplete

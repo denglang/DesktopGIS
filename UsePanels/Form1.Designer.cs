@@ -39,18 +39,28 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.conversionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aRDToShapefileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cSVToShapefileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.shapefileToKMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectByLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.zoomToLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openAttributeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeAllLayersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsBtnAddFile = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
-            this.removeLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeAllLayersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.btnIdentify = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -120,7 +130,9 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.conversionToolStripMenuItem,
+            this.selectionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1092, 24);
@@ -130,7 +142,8 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openTableToolStripMenuItem});
+            this.openTableToolStripMenuItem,
+            this.openImageToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -138,15 +151,74 @@
             // openTableToolStripMenuItem
             // 
             this.openTableToolStripMenuItem.Name = "openTableToolStripMenuItem";
-            this.openTableToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
-            this.openTableToolStripMenuItem.Text = "Open Table";
+            this.openTableToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.openTableToolStripMenuItem.Text = "Attribute Table";
             this.openTableToolStripMenuItem.Click += new System.EventHandler(this.openTableToolStripMenuItem_Click);
+            // 
+            // openImageToolStripMenuItem
+            // 
+            this.openImageToolStripMenuItem.Name = "openImageToolStripMenuItem";
+            this.openImageToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.openImageToolStripMenuItem.Text = "Open Image";
+            this.openImageToolStripMenuItem.Click += new System.EventHandler(this.openImageToolStripMenuItem_Click);
+            // 
+            // conversionToolStripMenuItem
+            // 
+            this.conversionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aRDToShapefileToolStripMenuItem,
+            this.cSVToShapefileToolStripMenuItem,
+            this.shapefileToKMLToolStripMenuItem});
+            this.conversionToolStripMenuItem.Name = "conversionToolStripMenuItem";
+            this.conversionToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
+            this.conversionToolStripMenuItem.Text = "Conversion";
+            // 
+            // aRDToShapefileToolStripMenuItem
+            // 
+            this.aRDToShapefileToolStripMenuItem.Name = "aRDToShapefileToolStripMenuItem";
+            this.aRDToShapefileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aRDToShapefileToolStripMenuItem.Text = "ARD to Shapefile";
+            this.aRDToShapefileToolStripMenuItem.Click += new System.EventHandler(this.aRDToShapefileToolStripMenuItem_Click);
+            // 
+            // cSVToShapefileToolStripMenuItem
+            // 
+            this.cSVToShapefileToolStripMenuItem.Name = "cSVToShapefileToolStripMenuItem";
+            this.cSVToShapefileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cSVToShapefileToolStripMenuItem.Text = "CSV to Shapefile";
+            // 
+            // shapefileToKMLToolStripMenuItem
+            // 
+            this.shapefileToKMLToolStripMenuItem.Name = "shapefileToKMLToolStripMenuItem";
+            this.shapefileToKMLToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.shapefileToKMLToolStripMenuItem.Text = "Shapefile to KML";
+            // 
+            // selectionToolStripMenuItem
+            // 
+            this.selectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectByToolStripMenuItem,
+            this.selectByLocationToolStripMenuItem});
+            this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
+            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.selectionToolStripMenuItem.Text = "Selection";
+            // 
+            // selectByToolStripMenuItem
+            // 
+            this.selectByToolStripMenuItem.Name = "selectByToolStripMenuItem";
+            this.selectByToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.selectByToolStripMenuItem.Text = "Select By Attributes";
+            // 
+            // selectByLocationToolStripMenuItem
+            // 
+            this.selectByLocationToolStripMenuItem.Name = "selectByLocationToolStripMenuItem";
+            this.selectByLocationToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.selectByLocationToolStripMenuItem.Text = "Select By Location";
             // 
             // treeView1
             // 
             this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
             this.treeView1.Location = new System.Drawing.Point(0, 51);
             this.treeView1.Name = "treeView1";
+            this.treeView1.ShowLines = false;
+            this.treeView1.ShowPlusMinus = false;
             this.treeView1.Size = new System.Drawing.Size(177, 614);
             this.treeView1.TabIndex = 3;
             this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
@@ -159,21 +231,35 @@
             this.removeLayerToolStripMenuItem,
             this.removeAllLayersToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 92);
             // 
             // zoomToLayerToolStripMenuItem
             // 
             this.zoomToLayerToolStripMenuItem.Name = "zoomToLayerToolStripMenuItem";
-            this.zoomToLayerToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.zoomToLayerToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.zoomToLayerToolStripMenuItem.Text = "Zoom To Layer";
             this.zoomToLayerToolStripMenuItem.Click += new System.EventHandler(this.zoomToLayerToolStripMenuItem_Click);
             // 
             // openAttributeToolStripMenuItem
             // 
             this.openAttributeToolStripMenuItem.Name = "openAttributeToolStripMenuItem";
-            this.openAttributeToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.openAttributeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.openAttributeToolStripMenuItem.Text = "Open Attribute";
             this.openAttributeToolStripMenuItem.Click += new System.EventHandler(this.openAttributeToolStripMenuItem_Click);
+            // 
+            // removeLayerToolStripMenuItem
+            // 
+            this.removeLayerToolStripMenuItem.Name = "removeLayerToolStripMenuItem";
+            this.removeLayerToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.removeLayerToolStripMenuItem.Text = "Remove Layer";
+            this.removeLayerToolStripMenuItem.Click += new System.EventHandler(this.removeLayerToolStripMenuItem_Click);
+            // 
+            // removeAllLayersToolStripMenuItem
+            // 
+            this.removeAllLayersToolStripMenuItem.Name = "removeAllLayersToolStripMenuItem";
+            this.removeAllLayersToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.removeAllLayersToolStripMenuItem.Text = "Remove All Layers";
+            this.removeAllLayersToolStripMenuItem.Click += new System.EventHandler(this.removeAllLayersToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -182,7 +268,9 @@
             this.toolStripButton1,
             this.toolStripButton2,
             this.toolStripButton3,
-            this.toolStripButton4});
+            this.toolStripButton4,
+            this.toolStripButton5,
+            this.btnIdentify});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(808, 25);
@@ -242,19 +330,27 @@
             this.toolStripButton4.Text = "toolStripButton4";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
-            // removeLayerToolStripMenuItem
+            // toolStripButton5
             // 
-            this.removeLayerToolStripMenuItem.Name = "removeLayerToolStripMenuItem";
-            this.removeLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.removeLayerToolStripMenuItem.Text = "Remove Layer";
-            this.removeLayerToolStripMenuItem.Click += new System.EventHandler(this.removeLayerToolStripMenuItem_Click);
+            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton5.Text = "toolStripButton5";
+            this.toolStripButton5.ToolTipText = "Zoom to all layers";
+            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
             // 
-            // removeAllLayersToolStripMenuItem
+            // btnIdentify
             // 
-            this.removeAllLayersToolStripMenuItem.Name = "removeAllLayersToolStripMenuItem";
-            this.removeAllLayersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.removeAllLayersToolStripMenuItem.Text = "Remove All Layers";
-            this.removeAllLayersToolStripMenuItem.Click += new System.EventHandler(this.removeAllLayersToolStripMenuItem_Click);
+            this.btnIdentify.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnIdentify.Image = ((System.Drawing.Image)(resources.GetObject("btnIdentify.Image")));
+            this.btnIdentify.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnIdentify.Name = "btnIdentify";
+            this.btnIdentify.Size = new System.Drawing.Size(23, 22);
+            this.btnIdentify.Text = "toolStripButton6";
+            this.btnIdentify.ToolTipText = "Identify";
+            this.btnIdentify.Click += new System.EventHandler(this.btnIdentify_Click);
             // 
             // Form1
             // 
@@ -307,6 +403,16 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripMenuItem removeLayerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeAllLayersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private System.Windows.Forms.ToolStripMenuItem conversionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aRDToShapefileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cSVToShapefileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem shapefileToKMLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectByToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectByLocationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton btnIdentify;
+        private System.Windows.Forms.ToolStripMenuItem openImageToolStripMenuItem;
     }
 }
 
