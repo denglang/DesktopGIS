@@ -67,6 +67,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSelectByAttributes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectByAttributes.designer.cs">
+      <DependentUpon>frmSelectByAttributes.cs</DependentUpon>
+    </Compile>
     <Compile Include="images\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -76,6 +82,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectByAttributes.resx">
+      <DependentUpon>frmSelectByAttributes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="images\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>

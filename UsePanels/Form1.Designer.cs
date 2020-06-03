@@ -139,6 +139,7 @@
             this.menuStrip1.Size = new System.Drawing.Size(1092, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.UseWaitCursor = true;
             // 
             // fileToolStripMenuItem
             // 
@@ -204,8 +205,9 @@
             // selectByToolStripMenuItem
             // 
             this.selectByToolStripMenuItem.Name = "selectByToolStripMenuItem";
-            this.selectByToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.selectByToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.selectByToolStripMenuItem.Text = "Select By Attributes";
+            this.selectByToolStripMenuItem.Click += new System.EventHandler(this.selectByToolStripMenuItem_Click);
             // 
             // selectByLocationToolStripMenuItem
             // 
@@ -264,6 +266,7 @@
             // 
             // toolStrip1
             // 
+            this.toolStrip1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsBtnAddFile,
             this.toolStripButton1,
@@ -394,8 +397,6 @@
         }
 
         #endregion
-
-        private AxMapWinGIS.AxMap axMap1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -427,6 +428,7 @@
         private System.Windows.Forms.ToolStripButton btnIdentify;
         private System.Windows.Forms.ToolStripMenuItem openImageToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkBox_addBaseMap;
+        public AxMapWinGIS.AxMap axMap1;
     }
 }
 

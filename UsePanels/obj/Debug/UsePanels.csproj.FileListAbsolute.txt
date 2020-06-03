@@ -19,3 +19,4 @@ C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\AmesFileFormats.dll
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\AmesPackets.dll
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\bin\Debug\UnitsLib.dll
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.csproj.CopyComplete
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\MapWinGIS_AE.frmSelectByAttributes.resources

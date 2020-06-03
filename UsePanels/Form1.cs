@@ -8,17 +8,18 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using AmesDataFormat;
+using MapWinGIS_AE;
 
 namespace UsePanels
 {
     public partial class Form1 : Form
     {
-        public static Dictionary<string, int> layerControl = new Dictionary<string, int>();
+        public Dictionary<string, int> layerControl = new Dictionary<string, int>();
         public bool drag;
         public int mouseX;
         public int mouseY;
         int n = 0;
-        int m = 0;
+        //int m = 0;
         public Form1()
          {
             InitializeComponent();
@@ -848,18 +849,14 @@ namespace UsePanels
         }
         private void aRDToShapefileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string path = "";
+            ArdToShapefile();
+        }
+        public void ArdToShapefile()
+        {
+            //string path = "";
             Cursor.Current = Cursors.WaitCursor;
+            string path = openFile("ard")[0];
 
-            //if (openFile("ard")[0] != null)
-           // {
-                path = openFile("ard")[0];
-
-           // }
-            //else
-            //{
-            //    return;
-            //}
             readARD ra = new readARD(path);
 
             Shapefile sf = new Shapefile();
@@ -1065,6 +1062,30 @@ namespace UsePanels
             else
             {
                 removeArcGISService();
+            }
+        }
+
+        private void selectByToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmSelectByAttributes fm = Application
+              .OpenForms
+              .OfType<frmSelectByAttributes>()
+              .LastOrDefault();
+
+            if (null == fm)
+            {
+               // fm = new frmSelectByAttributes(sf);
+                fm = new frmSelectByAttributes();
+                fm.cmbLayer.Items.Clear();
+                foreach (TreeNode N in treeView1.Nodes)
+                {
+                    fm.cmbLayer.Items.Add(N.Text);
+                }  
+                fm.Show();                
+            }
+            else
+            { // ...Yes. We have to activate it (i.e. bring to front, restore if minimized, focus)
+                fm.Activate();
             }
         }
     }
