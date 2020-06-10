@@ -28,8 +28,9 @@ namespace UsePanels
             axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
             axMap1.KnownExtents = tkKnownExtents.keUSA;
             panel1.Hide();
-            axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
-            axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
+            //axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
+            //axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
+            axMap1.ShapeIdentified += axMap1_ShapeIdentified;
         }
 
         private void openTableToolStripMenuItem_Click(object sender, EventArgs e)
@@ -42,10 +43,11 @@ namespace UsePanels
             panel1.Hide();
         }
 
-        private void openAttributeToolStripMenuItem_Click(object sender, EventArgs e)
+        public void createAttributeTable(int[] lstSelected = null, string query="")
         {
             Shapefile sf = new Shapefile();
             //shp.Open(@"C:\Work\GIS\data\states.shp");
+            //lstSelected = lstSelected ?? new List<int>();
             int layerHandle = -1; // getLayerHandle();
             string layerName = "";
             if (treeView1.SelectedNode != null)
@@ -56,7 +58,7 @@ namespace UsePanels
             else
             {
                 MessageBox.Show("Please select a layer.");
-                return; 
+                return;
             }
             sf = axMap1.get_Shapefile(layerHandle);
             // GeoProjection proj = new GeoProjection();
@@ -69,33 +71,18 @@ namespace UsePanels
             dataGridView1.Columns.Clear();
             //dataGridView1.Columns.Add("ID","ID");
 
-            //for (int i = 0; i < shp.NumFields; i++)
-            //{                
-            //    dataGridView1.Columns.Add(shp.Field[i].Name, shp.Field[i].Name);
-            //}
-
-            //for (int i = 0; i < shp.NumFields; i++)
-            //{
-            //    dataGridView1.Rows.Add();
-            //    dataGridView1.Rows[i].Cells[0].Value = i;
-
-            //    for (int j = 1; j < shp.NumFields; j++)
-            //    {
-            //        dataGridView1.Rows[i].Cells[j].Value = shp.CellValue[j, i];
-            //    }
-            //}
             DataTable dt = new DataTable();
             dt.Columns.Add(new DataColumn("ID"));
             for (int i = 0; i < sf.NumFields; i++)
             {
-
                 var s = sf.get_Field(i).Name.ToString();
-               
+
                 dt.Columns.Add(new DataColumn(s));
                 //MessageBox.Show(sf.get_Field(i).Name.ToString());
                 DataRow dr = null;
                 for (int j = 0; j < sf.NumShapes; j++)
-                {
+                {                   
+                    //if j in lstSelected 
                     //MessageBox.Show(sf.get_CellValue(i, j).ToString());
                     dr = dt.NewRow();
                     dr["ID"] = j;
@@ -103,7 +90,11 @@ namespace UsePanels
                     if (i == 0)
                     {
                         dr[s] = sf.get_CellValue(i, j);
-                        dt.Rows.Add(dr);
+                       // if (lstSelected != null && lstSelected.Contains(j))
+                       // {
+                            dt.Rows.Add(dr);
+                        //    dt.Select();                      
+                                            
                     }
                     else
                     {
@@ -111,15 +102,35 @@ namespace UsePanels
                         dt.Rows[j][s] = sf.get_CellValue(i, j);
                     }
                 }
-
             }
+            //if (query != null)
+            //    dt.Select(query);
             if (dt.Rows.Count > 0)
             {
                 dataGridView1.DataSource = dt;
+
+                if (lstSelected != null)
+                {
+                    foreach (int i in lstSelected)
+                    {
+                        for (int  j= 0; j < dataGridView1.RowCount-1; j++)
+                        {
+                            if (j==i) dataGridView1.Rows[j].Selected = true;
+                           // dataGridView1.FirstDisplayedScrollingRowIndex = j; // dataGridView1.SelectedRows[0].Index;
+                        }
+                    }
+                }                             
             }
             /////////////////////////////////////////
-            lblAttributeTitle.Text = layerName + ", with "+  sf.NumShapes.ToString() + " rows";
+            if (lstSelected.Length > 0)
+            {
+                lblAttributeTitle.Text = layerName + ", with " + sf.NumShapes.ToString() + " rows with "+ lstSelected.Length+ " selected";
+            } else lblAttributeTitle.Text = layerName + ", with " + sf.NumShapes.ToString() + " rows";
             panel1.Show();
+        }
+        private void openAttributeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            createAttributeTable();
         }
 
         private void AddLayerToMap(string filename)
@@ -284,7 +295,7 @@ namespace UsePanels
             //MessageBox.Show(Convert.ToUInt16(dataGridView1.SelectedRows[0].Cells[0].Value).ToString());
             // select a row, not a cell value in the attribute table, the above code is not good, since a cell 
             // calue can be anything that we cannot contorl. selectedrowindex is an int, no need to convert it.
-            int selectedrowindex = dataGridView1.SelectedCells[0].RowIndex;
+            int selectedrowindex = dataGridView1.SelectedCells[0].RowIndex;           
             sf.set_ShapeSelected(selectedrowindex, true);
             //sf.set_ShapeSelected(Convert.ToUInt16(selectedrowindex.ToString()),true);
             //sf.set_ShapeSelected(Convert.ToUInt16(dataGridView1.SelectedRows[0].Cells[0].Value.ToString()), true);
@@ -687,11 +698,12 @@ namespace UsePanels
                  sf.Labels.Generate(expression, tkLabelPositioning.lpCentroid, false);
                  sf.Labels.TextRenderingHint = tkTextRenderingHint.SystemDefault;
 
-                axMap1.SendMouseDown = true;
+                //axMap1.SendMouseDown = true;
                 axMap1.CursorMode = tkCursorMode.cmIdentify;
+                //axMap1.ShapeIdentified += axMap1_ShapeIdentified;
                 // change MapEvents to axMap1
-                axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
-                axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
+                // axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
+                // axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
                 // this.ZoomToValue(sf, "Name", "Iowa");
             }
             else MessageBox.Show("Please select a layer");
@@ -699,72 +711,8 @@ namespace UsePanels
 
         private void AxMap1MouseDownEvent2(object sender, _DMapEvents_MouseDownEvent e)
         {
-            
-            int layerHandle = getLayerHandle();
-            
-            Shapefile sf = axMap1.get_Shapefile(layerHandle);
-            if (sf != null)
-            {
-                double projX = 0.0;
-                double projY = 0.0;
-                axMap1.PixelToProj(e.x, e.y, ref projX, ref projY);
-
-                object result = null;
-                Extents ext = new Extents();
-                ext.SetBounds(projX, projY, 0.0, projX, projY, 0.0);
-                if (sf.SelectShapes(ext, 0.0, SelectMode.INCLUSION, ref result))
-                {
-                    int[] shapes = result as int[];
-                    if (shapes == null) return;
-
-                    if (shapes.Length > 1)
-                    {
-                        string s = "More than one shapes were selected. Shape indices:";
-                        for (int i = 0; i < shapes.Length; i++)
-                        {
-                            s += shapes[i] + Environment.NewLine;
-                            MessageBox.Show(s);
-                        }
-                    }
-                    else
-                    {
-                        sf.set_ShapeSelected(shapes[0], true);  // selecting the shape we are about to edit
-                        axMap1.Redraw(); Application.DoEvents();
-
-                        Form form = new Form();
-                        for (int i = 0; i < sf.NumFields; i++)
-                        {
-                            System.Windows.Forms.Label label = new System.Windows.Forms.Label();
-                            label.Left = 15;
-                            label.Top = i * 30 + 5;
-                            label.Text = sf.Field[i].Name;
-                            label.Width = 60;
-                            form.Controls.Add(label);
-                            //TextBox box = new TextBox();
-                            System.Windows.Forms.Label box = new System.Windows.Forms.Label();
-                            box.Left = 80;
-                            box.Top = label.Top;
-                            box.Width = 80;
-                            box.Text = sf.CellValue[i, shapes[0]].ToString();
-                            box.Name = sf.Field[i].Name;
-                            form.Controls.Add(box);
-                        }
-                        form.Width = 180;
-                        form.Height = sf.NumFields * 30 + 70;
-
-                        form.FormClosed += FormFormClosed;
-                        form.Text = "Shape: " + shapes[0];
-                        form.ShowInTaskbar = false;
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        form.FormBorderStyle = FormBorderStyle.FixedDialog;
-                        form.MaximizeBox = false;
-                        form.MinimizeBox = false;                        
-                        form.ShowDialog(axMap1.Parent);
-                   }
-                }
-
-            }
         }
+       
         void FormFormClosed(object sender, FormClosedEventArgs e)
         {
             int layerHandle = getLayerHandle();
@@ -854,7 +802,7 @@ namespace UsePanels
         public void ArdToShapefile()
         {
             //string path = "";
-            Cursor.Current = Cursors.WaitCursor;
+            //Cursor.Current = Cursors.WaitCursor;
             string path = openFile("ard")[0];
 
             readARD ra = new readARD(path);
@@ -1086,6 +1034,108 @@ namespace UsePanels
             else
             { // ...Yes. We have to activate it (i.e. bring to front, restore if minimized, focus)
                 fm.Activate();
+            }
+        }
+
+        private void axMap1_ShapeIdentified(object sender, _DMapEvents_ShapeIdentifiedEvent e)
+        {
+            int layerHandle = getLayerHandle();
+            
+            Shapefile sf = axMap1.get_Shapefile(layerHandle);
+            sf.Identifiable = true;
+            //MessageBox.Show(layerControl[layerHandle])
+            if (sf != null)
+            {
+                double projX = 0.0;
+                double projY = 0.0;
+                // axMap1.PixelToProj(e.pointX, e.pointY, ref projX, ref projY);
+                projX = e.pointX;
+                projY = e.pointY;
+                object result = null;
+                Extents ext = new Extents(); 
+                ext.SetBounds(projX, projY, 0.0, projX, projY, 0.0);
+                if (sf.SelectShapes(ext, 0.0, SelectMode.INTERSECTION, ref result))
+                {
+                    int[] shapes = result as int[];
+                    if (shapes == null) return;
+
+                    if (shapes.Length > 1)
+                    {
+                        string s = "More than one shapes were selected. Shape indices:";
+                        for (int i = 0; i < shapes.Length; i++)
+                        {
+                            s += shapes[i] + Environment.NewLine;
+                            MessageBox.Show(s);
+                        }
+                    }
+                    else
+                    {
+                        sf.set_ShapeSelected(shapes[0], true);  // selecting the shape we are about to edit
+                        axMap1.Redraw(); Application.DoEvents();
+
+                        Form form = new Form();
+                        for (int i = 0; i < sf.NumFields; i++)
+                        {
+                            System.Windows.Forms.Label label = new System.Windows.Forms.Label();
+                            label.Left = 15;
+                            label.Top = i * 30 + 5;
+                            label.Text = sf.Field[i].Name;
+                            label.Width = 60;
+                            form.Controls.Add(label);
+                            //TextBox box = new TextBox();
+                            System.Windows.Forms.Label box = new System.Windows.Forms.Label();
+                            box.Left = 80;
+                            box.Top = label.Top;
+                            box.Width = 80;
+                            box.Text = sf.CellValue[i, shapes[0]].ToString();
+                            box.Name = sf.Field[i].Name;
+                            form.Controls.Add(box);
+                        }
+                        form.Width = 180;
+                        form.Height = sf.NumFields * 30 + 70;
+
+                        form.FormClosed += FormFormClosed;
+                        form.Text = "Shape: " + shapes[0];
+                        form.ShowInTaskbar = false;
+                        form.StartPosition = FormStartPosition.CenterParent;
+                        form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                        form.MaximizeBox = false;
+                        form.MinimizeBox = false;
+                        form.Show();
+                        //form.ShowDialog(axMap1.Parent);
+                        // if (CheckOpened("form"))
+                        // {
+                        //     form.Activate();
+                        // }
+                        // else form.Show();
+                    }
+                }
+                else MessageBox.Show("Nothing Selected");               
+            }
+        }
+
+        private bool CheckOpened(string name)
+        {
+            FormCollection fc = Application.OpenForms;
+
+            foreach (Form frm in fc)
+            {
+                if (frm.Text == name)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < axMap1.NumLayers; i++)
+            {
+                int layerHandle = axMap1.get_LayerHandle(i);
+                Shapefile sf = axMap1.get_Shapefile(layerHandle);
+                sf.SelectNone();
+                axMap1.Redraw();
             }
         }
     }

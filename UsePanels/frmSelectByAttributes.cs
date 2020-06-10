@@ -78,8 +78,12 @@ namespace MapWinGIS_AE
 
             for (int i = 0; i < sf.NumShapes; i++)
             {
-                lstFieldValue.Items.Add(sf.get_CellValue(fieldIndex, i));
+                if (!lstFieldValue.Items.Contains(sf.get_CellValue(fieldIndex, i))){ 
+                    lstFieldValue.Items.Add(sf.get_CellValue(fieldIndex, i));
+                }
             }
+            
+            lstFieldValue.Sorted = true;
         }
 
         private void rTxtQueryBuilder_TextChanged(object sender, EventArgs e)
@@ -137,6 +141,8 @@ namespace MapWinGIS_AE
             string error = "";
             object result = null;
 
+            List<int> lstSelected = new List<int>();
+
             string query = rTxtQueryBuilder.Text;
             //string query = "[IRI Averag] < 343.0";
             //query = "[ACRES]< 400000 AND [ACRES] > 300000";
@@ -150,6 +156,7 @@ namespace MapWinGIS_AE
                     for (int i = 0; i < shapes.Length; i++)
                     {
                         sf.set_ShapeSelected(shapes[i], true);
+                        lstSelected.Add(i);
                     }
                 }
                 string layerName = cmbLayer.Text;               
@@ -170,10 +177,14 @@ namespace MapWinGIS_AE
                 fm.axMap1.Refresh();
                 fm.axMap1.Redraw();
                 MessageBox.Show("Objects selected: " + sf.NumSelected);
+
+                //open gridView1 here and add lstSelected to it. 
+                fm.createAttributeTable(shapes,query);
+
             }
             else
             {
-                MessageBox.Show("No shapes agree with the condition.");
+                MessageBox.Show("No shapes match the query.");
             }
         }
 

@@ -61,6 +61,7 @@
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.btnIdentify = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.chkBox_addBaseMap = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -78,6 +79,7 @@
             this.axMap1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMap1.OcxState")));
             this.axMap1.Size = new System.Drawing.Size(619, 665);
             this.axMap1.TabIndex = 0;
+            this.axMap1.ShapeIdentified += new AxMapWinGIS._DMapEvents_ShapeIdentifiedEventHandler(this.axMap1_ShapeIdentified);
             // 
             // panel1
             // 
@@ -205,7 +207,7 @@
             // selectByToolStripMenuItem
             // 
             this.selectByToolStripMenuItem.Name = "selectByToolStripMenuItem";
-            this.selectByToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.selectByToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.selectByToolStripMenuItem.Text = "Select By Attributes";
             this.selectByToolStripMenuItem.Click += new System.EventHandler(this.selectByToolStripMenuItem_Click);
             // 
@@ -274,7 +276,8 @@
             this.toolStripButton3,
             this.toolStripButton4,
             this.toolStripButton5,
-            this.btnIdentify});
+            this.btnIdentify,
+            this.toolStripButton6});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(808, 25);
@@ -356,6 +359,17 @@
             this.btnIdentify.ToolTipText = "Identify";
             this.btnIdentify.Click += new System.EventHandler(this.btnIdentify_Click);
             // 
+            // toolStripButton6
+            // 
+            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
+            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton6.Name = "toolStripButton6";
+            this.toolStripButton6.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton6.Text = "toolStripButton6";
+            this.toolStripButton6.ToolTipText = "Clear All Selections";
+            this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
+            // 
             // chkBox_addBaseMap
             // 
             this.chkBox_addBaseMap.AutoSize = true;
@@ -398,7 +412,6 @@
 
         #endregion
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
@@ -429,6 +442,8 @@
         private System.Windows.Forms.ToolStripMenuItem openImageToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkBox_addBaseMap;
         public AxMapWinGIS.AxMap axMap1;
+        private System.Windows.Forms.ToolStripButton toolStripButton6;
+        public System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 
