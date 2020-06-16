@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows.Forms;
 using AmesDataFormat;
 using MapWinGIS_AE;
+using System.Text;
 
 namespace UsePanels
 {
@@ -20,19 +21,59 @@ namespace UsePanels
         public int mouseY;
         int n = 0;
         //int m = 0;
+        
         public Form1()
          {
             InitializeComponent();
-
-            new GlobalSettings() { AllowProjectionMismatch = true, ReprojectLayersOnAdding = true };
+            
+        new GlobalSettings() { AllowProjectionMismatch = true, ReprojectLayersOnAdding = true };
             axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
             axMap1.KnownExtents = tkKnownExtents.keUSA;
             panel1.Hide();
             //axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
             //axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
+            //axMap1.SendMouseMove = true;
+            axMap1.SendMouseDown = true; 
             axMap1.ShapeIdentified += axMap1_ShapeIdentified;
+            axMap1.ShapeHighlighted += AxMap1ShapeHighlighted;
         }
+        private ToolStripStatusLabel m_label = null;
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            toolStripStatusLabel1.Text = DateTime.Now.ToLongDateString();
+        }
+        public void ShowAttributes()
+        {
+            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;           
+            Shapefile sf = new Shapefile();
+            int handle = getLayerHandle();
+            sf = axMap1.get_Shapefile(handle);
+            
+                //m_layerHandle = axMap1.AddLayer(sf,true);
+                //sf = axMap1.get_Shapefile(m_layerHandle);     // in case a copy of shapefile was created by GlobalSettings.ReprojectLayersOnAdding
 
+                axMap1.SendMouseMove = true;
+                axMap1.CursorMode = tkCursorMode.cmIdentify;
+                axMap1.ShapeHighlighted += AxMap1ShapeHighlighted;
+                m_label = toolStripStatusLabel1;
+                       
+        }
+        private void AxMap1ShapeHighlighted(object sender, _DMapEvents_ShapeHighlightedEvent e)
+        {
+            toolStripStatusLabel1.Text = "";
+            Shapefile sf = axMap1.get_Shapefile(e.layerHandle);
+            if (sf != null)
+            {
+                string s = "";
+                for (int i = 0; i < sf.NumFields; i++)
+                {
+                    string val = sf.get_CellValue(i, e.shapeIndex).ToString();
+                    if (val == "") val = "null";
+                    s += sf.Table.Field[i].Name + ":" + val + "; ";
+                }
+                toolStripStatusLabel1.Text = s;
+            }
+        }
         private void openTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             panel1.Show();
@@ -116,13 +157,15 @@ namespace UsePanels
                         for (int  j= 0; j < dataGridView1.RowCount-1; j++)
                         {
                             if (j==i) dataGridView1.Rows[j].Selected = true;
-                           // dataGridView1.FirstDisplayedScrollingRowIndex = j; // dataGridView1.SelectedRows[0].Index;
+                            //dataGridView1.FirstDisplayedScrollingRowIndex = j;
+                            //dataGridView1.CurrentCell = dataGridView1.Rows[j].Cells[0];
+                            //dataGridView1.Focus();
                         }
                     }
                 }                             
             }
             /////////////////////////////////////////
-            if (lstSelected.Length > 0)
+            if (lstSelected != null && lstSelected.Length > 0)
             {
                 lblAttributeTitle.Text = layerName + ", with " + sf.NumShapes.ToString() + " rows with "+ lstSelected.Length+ " selected";
             } else lblAttributeTitle.Text = layerName + ", with " + sf.NumShapes.ToString() + " rows";
@@ -576,10 +619,7 @@ namespace UsePanels
             //panel1.MinimumSize=10;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+        
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
@@ -677,36 +717,37 @@ namespace UsePanels
 
         private void btnIdentify_Click(object sender, EventArgs e)
         {
+            ShowAttributes();
             //Cursor.Current = Cursor
             //axMap1.CursorMode = tkCursorMode.cmIdentify;
-            if (treeView1.SelectedNode != null)
-            {
-                Shapefile sf = new Shapefile();
-                int layerHandle = getLayerHandle();
-                sf = axMap1.get_Shapefile(layerHandle);
+            //if (treeView1.SelectedNode != null)
+            //{
+            //    Shapefile sf = new Shapefile();
+            //    int layerHandle = getLayerHandle();
+            //    sf = axMap1.get_Shapefile(layerHandle);
 
-                string expression = "";
-                for (int i = 1; i < sf.NumFields; i++)      // all the fields will be displayed apart the first one
-                {
-                    expression += "[" + sf.Field[i].Name + "]";
-                    if (i != sf.NumFields - 1)
-                    {
-                        const string endLine = "\"\n\"";
-                        expression += string.Format("+ {0} +", endLine);
-                    }
-                }
-                 sf.Labels.Generate(expression, tkLabelPositioning.lpCentroid, false);
-                 sf.Labels.TextRenderingHint = tkTextRenderingHint.SystemDefault;
+            //    string expression = "";
+            //    for (int i = 1; i < sf.NumFields; i++)      // all the fields will be displayed apart the first one
+            //    {
+            //        expression += "[" + sf.Field[i].Name + "]";
+            //        if (i != sf.NumFields - 1)
+            //        {
+            //            const string endLine = "\"\n\"";
+            //            expression += string.Format("+ {0} +", endLine);
+            //        }
+            //    }
+            //     sf.Labels.Generate(expression, tkLabelPositioning.lpCentroid, false);
+            //     sf.Labels.TextRenderingHint = tkTextRenderingHint.SystemDefault;
 
-                //axMap1.SendMouseDown = true;
-                axMap1.CursorMode = tkCursorMode.cmIdentify;
-                //axMap1.ShapeIdentified += axMap1_ShapeIdentified;
-                // change MapEvents to axMap1
-                // axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
-                // axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
-                // this.ZoomToValue(sf, "Name", "Iowa");
-            }
-            else MessageBox.Show("Please select a layer");
+            //    //axMap1.SendMouseDown = true;
+            //    axMap1.CursorMode = tkCursorMode.cmIdentify;
+            //    //axMap1.ShapeIdentified += axMap1_ShapeIdentified;
+            //    // change MapEvents to axMap1
+            //    // axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
+            //    // axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
+            //    // this.ZoomToValue(sf, "Name", "Iowa");
+            //}
+            //else MessageBox.Show("Please select a layer");
         }
 
         private void AxMap1MouseDownEvent2(object sender, _DMapEvents_MouseDownEvent e)
@@ -779,21 +820,38 @@ namespace UsePanels
             }
         }
 
-        private void saveFile()
+        private void saveFile(Shapefile sf)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            SaveFileDialog sfd = new SaveFileDialog();
             //saveFileDialog1.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
             //saveFileDialog1.Title = "Save an Image File";
-            saveFileDialog1.Filter = "Shape File|*.shp";
-            saveFileDialog1.Title = "Save a Shapefile";
-            saveFileDialog1.InitialDirectory = @"C:\work\gis\data";
-            saveFileDialog1.ShowDialog();
-            saveFileDialog1.CheckFileExists = true;
-            saveFileDialog1.CheckPathExists = true;
-            //if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            //{
-               
-            //}
+            sfd.Filter = "Shape File|*.shp";
+            sfd.Title = "Save a Shapefile";
+            sfd.InitialDirectory = @"C:\work\gis\data";
+            sfd.ShowDialog();
+            //sfd.CheckFileExists = true;
+            //sfd.CheckPathExists = true;
+            
+            string f = "";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                f = sfd.FileName;
+            }
+
+            //File.Delete(f);
+            //deleteFiles(f);
+            // MessageBox.Show(f);
+            if (sf != null)
+            {
+                sf.SaveAs(f, null);
+                //frm.Hide();
+                // MessageBox.Show("Shapefile creatd and saved to " + f);
+                AddLayerToMap(f);
+            }
+            else
+            {
+                MessageBox.Show("No shapefile created!");
+            }
         }
         private void aRDToShapefileToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -942,8 +1000,7 @@ namespace UsePanels
             sfdialog.Title = "Save Shapefile";
 
             if (sfdialog.ShowDialog() == DialogResult.OK)
-            {
-              
+            {             
                 f = sfdialog.FileName;
             }
            
@@ -1029,7 +1086,8 @@ namespace UsePanels
                 {
                     fm.cmbLayer.Items.Add(N.Text);
                 }  
-                fm.Show();                
+                fm.Show();
+                fm.BringToFront();
             }
             else
             { // ...Yes. We have to activate it (i.e. bring to front, restore if minimized, focus)
@@ -1136,6 +1194,81 @@ namespace UsePanels
                 Shapefile sf = axMap1.get_Shapefile(layerHandle);
                 sf.SelectNone();
                 axMap1.Redraw();
+            }
+        }
+
+        private void contextMenuStrip2_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
+
+        private void toShapefileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int layerHandle = getLayerHandle();
+            Shapefile sf = new Shapefile();
+            Shapefile sf_export = new Shapefile();
+
+            sf = axMap1.get_Shapefile(layerHandle);
+            sf_export = sf.ExportSelection();
+            saveFile(sf_export);
+        }
+
+        private void exportToCSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.Rows.Count > 0)
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "CSV (*.csv)|*.csv";
+                sfd.FileName = "Output.csv";
+                bool fileError = false;
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    if (File.Exists(sfd.FileName))
+                    {
+                        try
+                        {
+                            File.Delete(sfd.FileName);
+                        }
+                        catch (IOException ex)
+                        {
+                            fileError = true;
+                            MessageBox.Show("Cannot write the data to the disk." + ex.Message);
+                        }
+                    }
+                    if (!fileError)
+                    {
+                        try
+                        {
+                            int columnCount = dataGridView1.Columns.Count;
+                            string columnNames = "";
+                            string[] outputCsv = new string[dataGridView1.Rows.Count + 1];
+                            for (int i = 0; i < columnCount; i++)
+                            {
+                                columnNames += dataGridView1.Columns[i].HeaderText.ToString() + ",";
+                            }
+                            outputCsv[0] += columnNames;
+
+                            for (int i = 0; i < dataGridView1.Rows.Count-1; i++)
+                            {
+                                for (int j = 0; j < columnCount; j++)
+                                {
+                                    outputCsv[i] += dataGridView1.Rows[i].Cells[j].Value.ToString() + ",";
+                                }
+                            }
+
+                            File.WriteAllLines(sfd.FileName, outputCsv, Encoding.UTF8);
+                            MessageBox.Show("Data Exported Successfully !!!", "Info");
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error :" + ex.Message);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No Record To Export !!!", "Info");
             }
         }
     }

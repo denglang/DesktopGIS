@@ -146,7 +146,7 @@ namespace MapWinGIS_AE
             string query = rTxtQueryBuilder.Text;
             //string query = "[IRI Averag] < 343.0";
             //query = "[ACRES]< 400000 AND [ACRES] > 300000";
-            MessageBox.Show(query);
+            //MessageBox.Show(query);
             sf.SelectNone();
             if (sf.Table.Query(query, ref result, ref error))
             {
@@ -155,12 +155,18 @@ namespace MapWinGIS_AE
                 {
                     for (int i = 0; i < shapes.Length; i++)
                     {
+                        //Shape shp = new Shape();
+                        
                         sf.set_ShapeSelected(shapes[i], true);
                         lstSelected.Add(i);
                     }
                 }
-                string layerName = cmbLayer.Text;               
-                
+                string layerName = cmbLayer.Text;
+                var utils = new Utils();
+                // SelectionDrawingOptions sdo = sf.SelectionDrawingOptions;
+                //sf.SelectionDrawingOptions.SetDefaultPointSymbol(tkDefaultPointSymbol);
+                sf.SelectionDrawingOptions.PointSize = 24;
+                sf.SelectionDrawingOptions.FillColor = utils.ColorByName(tkMapColor.Navy);
               //  MessageBox.Show(Form1.layerControl.ToString());
                 int layerHandle = -1;
                 if (layerName != null) {
@@ -176,7 +182,7 @@ namespace MapWinGIS_AE
                
                 fm.axMap1.Refresh();
                 fm.axMap1.Redraw();
-                MessageBox.Show("Objects selected: " + sf.NumSelected);
+                //MessageBox.Show("Objects selected: " + sf.NumSelected);
 
                 //open gridView1 here and add lstSelected to it. 
                 fm.createAttributeTable(shapes,query);
@@ -202,6 +208,7 @@ namespace MapWinGIS_AE
                 lstFieldName.Items.Add(it);
             }          
             this.Show();
+            this.Focus();
         }
 
         private void lstFieldName_SelectedIndexChanged(object sender, EventArgs e)
