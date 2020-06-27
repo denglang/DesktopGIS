@@ -57,6 +57,7 @@
             this.removeAllLayersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toShapefileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.shapefileToKMLToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsBtnAddFile = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -144,12 +145,12 @@
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportToCSVToolStripMenuItem});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(147, 26);
             // 
             // exportToCSVToolStripMenuItem
             // 
             this.exportToCSVToolStripMenuItem.Name = "exportToCSVToolStripMenuItem";
-            this.exportToCSVToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToCSVToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.exportToCSVToolStripMenuItem.Text = "Export to CSV";
             this.exportToCSVToolStripMenuItem.Click += new System.EventHandler(this.exportToCSVToolStripMenuItem_Click);
             // 
@@ -202,21 +203,22 @@
             // aRDToShapefileToolStripMenuItem
             // 
             this.aRDToShapefileToolStripMenuItem.Name = "aRDToShapefileToolStripMenuItem";
-            this.aRDToShapefileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.aRDToShapefileToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.aRDToShapefileToolStripMenuItem.Text = "ARD to Shapefile";
             this.aRDToShapefileToolStripMenuItem.Click += new System.EventHandler(this.aRDToShapefileToolStripMenuItem_Click);
             // 
             // cSVToShapefileToolStripMenuItem
             // 
             this.cSVToShapefileToolStripMenuItem.Name = "cSVToShapefileToolStripMenuItem";
-            this.cSVToShapefileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.cSVToShapefileToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.cSVToShapefileToolStripMenuItem.Text = "CSV to Shapefile";
             // 
             // shapefileToKMLToolStripMenuItem
             // 
             this.shapefileToKMLToolStripMenuItem.Name = "shapefileToKMLToolStripMenuItem";
-            this.shapefileToKMLToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.shapefileToKMLToolStripMenuItem.Text = "Shapefile to KML";
+            this.shapefileToKMLToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.shapefileToKMLToolStripMenuItem.Text = "Batch Shapefile to KML";
+            this.shapefileToKMLToolStripMenuItem.Click += new System.EventHandler(this.shapefileToKMLToolStripMenuItem_Click);
             // 
             // selectionToolStripMenuItem
             // 
@@ -293,7 +295,8 @@
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toShapefileToolStripMenuItem});
+            this.toShapefileToolStripMenuItem,
+            this.shapefileToKMLToolStripMenuItem1});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.exportToolStripMenuItem.Text = "Export";
@@ -301,9 +304,16 @@
             // toShapefileToolStripMenuItem
             // 
             this.toShapefileToolStripMenuItem.Name = "toShapefileToolStripMenuItem";
-            this.toShapefileToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.toShapefileToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.toShapefileToolStripMenuItem.Text = "To Shapefile";
             this.toShapefileToolStripMenuItem.Click += new System.EventHandler(this.toShapefileToolStripMenuItem_Click);
+            // 
+            // shapefileToKMLToolStripMenuItem1
+            // 
+            this.shapefileToKMLToolStripMenuItem1.Name = "shapefileToKMLToolStripMenuItem1";
+            this.shapefileToKMLToolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
+            this.shapefileToKMLToolStripMenuItem1.Text = "Shapefile to KML";
+            this.shapefileToKMLToolStripMenuItem1.Click += new System.EventHandler(this.shapefileToKMLToolStripMenuItem1_Click);
             // 
             // toolStrip1
             // 
@@ -509,6 +519,7 @@
         private System.Windows.Forms.ToolStripMenuItem exportToCSVToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripMenuItem shapefileToKMLToolStripMenuItem1;
     }
 }
 

@@ -27,7 +27,8 @@ namespace UsePanels
             InitializeComponent();
             
         new GlobalSettings() { AllowProjectionMismatch = true, ReprojectLayersOnAdding = true };
-            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
+            //axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
+            axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
             axMap1.KnownExtents = tkKnownExtents.keUSA;
             panel1.Hide();
             //axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
@@ -188,7 +189,7 @@ namespace UsePanels
                 //axMap1.LockWindow(tkLockMode.lmLock);
 
                 axMap1.GrabProjectionFromData = true;
-
+                //axMap1.DrawLineEx()
                 //**************************************************
                 // GeoProjection proj = new GeoProjection();
                 // proj.ReadFromFile(filename);
@@ -241,6 +242,7 @@ namespace UsePanels
                 treeView1.ImageList = myImageList;
                 treeView1.CheckBoxes = true; //show checkbox of each node
 
+                //System.Drawing.Image.FromHbitmap()
                 // MessageBox.Show(axMap1.get_LayerFilename(layerHandle));
                 //MessageBox.Show(axMap1.get_LayerDescription(layerHandle));
                 // string layerName = Path.GetFileNameWithoutExtension(pa
@@ -317,8 +319,8 @@ namespace UsePanels
                     //options.PointType = tkPointSymbolType.ptSymbolStandard;
                     //options.PointShape = tkPointShapeType.ptShapeStar;
                     //options.PointSidesCount = 8;
-
                 }
+                //ShowLegend();
             }
             else
             {
@@ -326,6 +328,65 @@ namespace UsePanels
             }
         }
 
+        private void ShowLegend()
+        {
+            int width = 40;
+            int height = 20;
+            int padding = 5;
+            int drawHandle = axMap1.NewDrawing(tkDrawReferenceList.dlScreenReferencedList);
+            Labels labels = axMap1.get_DrawingLabels(drawHandle);
+            if (labels != null)
+                labels.Alignment = tkLabelAlignment.laBottomRight;
+            Shapefile sf = new Shapefile();
+            string message = "";
+            for (int i = 0; i < axMap1.NumLayers; i++)
+            {
+                int layerHandle = axMap1.get_LayerHandle(i);
+                sf = axMap1.get_Shapefile(layerHandle);
+                // adds rectangle
+                object x, y;
+                int top = padding + i * (height + padding);
+                if(sf.ShapefileType==ShpfileType.SHP_POLYGON)
+                {
+                    this.getRectange(padding, top, width, height, out x, out y);
+                    axMap1.DrawPolygonEx(drawHandle, ref x, ref y, 4, sf.DefaultDrawingOptions.LineColor, true);
+                } else if (sf.ShapefileType == ShpfileType.SHP_POINT)
+                {
+                    //double x = 0.0;
+                    //double y = 0.0;
+                    //shp.get_XY(0, ref x, ref y);
+                    axMap1.DrawPointEx(drawHandle, 0.0, 0.0, 5, 0);
+                }
+                else if (sf.ShapefileType == ShpfileType.SHP_POLYLINE)
+                {
+                    axMap1.DrawLineEx(layerHandle, 0, 0, 0, 9,3,sf.DefaultDrawingOptions.LineColor);
+                }
+                    // adds text
+                    string text = axMap1.get_LayerName(layerHandle) + ".shp";
+                var dlbls = axMap1.get_DrawingLabels(drawHandle);
+                if (dlbls != null)
+                    dlbls.AddLabel(text, padding * 2 + width, top + padding);
+                // the position of text (for debugging)
+                axMap1.DrawPointEx(drawHandle, padding * 2 + width, top, 2, 255);
+            }
+        }
+        // <summary>
+        // Returns coordinates of the rectangle with specified size and position
+        // </summary>
+        private void getRectange(int left, int top, int width, int height, out object xArr, out object yArr)
+        {
+            double[] x = new double[4];
+            double[] y = new double[4];
+            x[0] = left;
+            x[1] = left;
+            x[2] = left + width;
+            x[3] = left + width;
+            y[0] = top;
+            y[1] = top + height;
+            y[2] = top + height;
+            y[3] = top;
+            xArr = x; yArr = y;
+        }
         private void dataGridView1_MouseUp(object sender, MouseEventArgs e)
         {
             string layerName = lblAttributeTitle.Text.Split(',')[0];
@@ -416,7 +477,8 @@ namespace UsePanels
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            var fileContent = string.Empty;
+            //var fileContent = string.Empty;
+            //open multiple shapefiles from on folder 
             string[] filenames = openFile();
             if (filenames == null || filenames.Length == 0)
             {
@@ -853,6 +915,34 @@ namespace UsePanels
                 MessageBox.Show("No shapefile created!");
             }
         }
+
+        private string saveFile(string fileType)
+        {
+            string filename = string.Empty;
+            //string[] fileNames = null;
+            var fileContent = string.Empty;
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = fileType + " Files (*." + fileType + ")|*." + fileType;
+                //MessageBox.Show(openFileDialog.Filter);
+                sfd.FilterIndex = 1;
+                sfd.RestoreDirectory = true;
+                //sfd.InitialDirectory = @"D:\shp";
+                sfd.FileName = treeView1.SelectedNode.Text; 
+                    
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of specified file
+                    filename = sfd.FileName;
+                   // fileNames = sfd.FileNames;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return filename;
+        }
         private void aRDToShapefileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ArdToShapefile();
@@ -1020,6 +1110,196 @@ namespace UsePanels
             }
         }
 
+        private void ConvertShapeFileToKML(string KMLFileName, Shapefile sf)
+        {          
+            //open the kml output file 
+            var KMLFile = OpenKMLFile(KMLFileName);
+
+            //Loop through the shape file, shape by shape
+            int ConvertedShapeCount = 0;
+
+            //the following code doesn't change the sf projection
+            //sf.Projection = tkMapProjection.PROJECTION_WGS84.ToString();
+            //axMap1.GrabProjectionFromData = true;
+
+            //if (sf.ShapefileType == ShpfileType.SHP_POLYGON)
+            if (sf.ShapefileType == ShpfileType.SHP_POLYLINE)
+            {
+                for (int ShapeIndex = 0; ShapeIndex <= sf.NumShapes - 1; ShapeIndex++)
+                {
+                    Shape shp = new Shape();
+                    shp.Create(ShpfileType.SHP_POLYLINE);
+                    shp = sf.Shape[ShapeIndex];  //Indexer cannot pass ref, so have to create local shp 
+                    AddPolygonKML(ref shp, ref KMLFile, (ShapeIndex).ToString(), sf);
+                    ConvertedShapeCount += 1;
+                }
+
+                CloseKMLFile(ref KMLFile);
+                //Debug.Print("Processed " + ShapeIndex + " Shapes and converted " + ConvertedShapeCount + " to KML.");
+                Debug.Print("Converted " + ConvertedShapeCount + " to KML.");
+            }
+            else
+            {
+                Debug.Print("Input shapefile is not a polygon file,conversion not supported yet");
+            }
+
+            //MessageBox.Show("KML " + KMLFileName + " created!");
+
+            //open the kml in google earth
+            if (File.Exists(@"C:\Program Files\Google\Google Earth Pro\client\googleearth.exe")) {
+            // System.Diagnostics.Process.Start(,KMLFileName);
+                System.Diagnostics.Process.Start(@KMLFileName);
+            } else
+            {
+                MessageBox.Show("Google Earth is not found on this machine");
+                return; 
+            }
+        }
+        //////////////////////////////////////////////////////////
+        private void AddPolygonKML(ref MapWinGIS.Shape Shape, ref StreamWriter oWrite, string ShapeID, Shapefile sf)
+        {
+            Double LatDeg;
+            Double LonDeg;
+            Double Height;
+
+            GeoProjection proj = new GeoProjection();
+            //proj.ImportFromESRI()
+            //Note: depending on whether this is AGL or ASL, change the KML setting below accordingly
+
+            //Create a Placemark with no label to wrap the Polygon in
+            oWrite.WriteLine("   <Placemark>");
+
+            //Use the Shapes ID as a Name (optional)
+            oWrite.WriteLine("      <name>Shape " + ShapeID + "</name>");
+
+            //Pick up the Style we wish to use (otional, but allows for nice colours etc)
+            oWrite.WriteLine("      <styleUrl>Shape Style</styleUrl>");
+
+            //Start the Polygon KML object
+            // oWrite.WriteLine("      <Polygon>");
+
+            //Note there are two common options for Altitude:
+            // "relativeToGround"  for Above Ground Level
+            // "absolute" for Above Sea Level
+            // See https://developers.google.com/kml/documentation/altitudemode
+
+            //A Polygon is defined by a ring of coordinates
+            //oWrite.WriteLine("         <outerBoundaryIs>");
+            oWrite.WriteLine("           <styleUrl>#orange-5px</styleUrl>");
+            oWrite.WriteLine("            <LinearRing>");
+            //The <extrude> tag extends the line down to the ground
+            oWrite.WriteLine("         <extrude>1</extrude>");
+            oWrite.WriteLine("            <tessellate>1</tessellate>");
+            oWrite.WriteLine("         <altitudeMode>relativeToGround</altitudeMode>");
+            oWrite.WriteLine("            <coordinates>");
+
+            //Loop through the points one by one
+            //int fieldIndex = sf.Table.FieldIndexByName["IRI Averag"];
+            int fieldIndex1 = sf.Table.FieldIndexByName["Elevation"]; ;
+            //if (sf.Table.FieldIndexByName["Elevation"]>=0)
+            //{
+            //    fieldIndex1 = sf.Table.FieldIndexByName["Elevation"];
+            //}
+
+            for (int PointIndex = 0; PointIndex < Shape.numPoints; PointIndex++)
+            {
+                //Extract the 3D coordinates for the Point
+                LonDeg = Shape.Point[PointIndex].x;
+                //Console.WriteLine(LonDeg);
+                LatDeg = Shape.Point[PointIndex].y;
+
+                if (fieldIndex1 >= 0)
+                {
+                    // Height = Shape.Point[PointIndex].Z;
+
+                    string h = (string)sf.get_CellValue(fieldIndex1, PointIndex);
+                    // MessageBox.Show("h: "+ sf.get_CellValue(fieldIndex1, PointIndex).ToString());
+                    //Height = Double.Parse(h != null ? (string)h : "0");
+                    // MessageBox.Show(Height.ToString());
+                    Height = Double.Parse(h);
+                }
+                else { Height = 500.000; }
+
+
+                //MessageBox.Show(Height.ToString());
+                // Debug.Print(Height.ToString());
+                //create KML coordinate string is <lon,lat,height> {space} <lon,lat,height>
+                //Note: Any space next to a ',' will create a new coordinate!
+                oWrite.Write("                  ");
+                oWrite.Write(string.Format("{0:0.000000}", LonDeg) + ",");
+                oWrite.Write(string.Format("{0:0.000000}", LatDeg) + ",");
+                oWrite.Write(string.Format("{0:000}", Height) + " ");
+                oWrite.WriteLine();
+
+            }
+
+            //Note to save space we limit the Latitude to 6 decimal places
+
+            //Close the relevant folders in reverse order
+            oWrite.WriteLine("               </coordinates>");
+            oWrite.WriteLine("            </LinearRing>");
+            // oWrite.WriteLine("         </outerBoundaryIs>");
+            // oWrite.WriteLine("      </Polygon>");
+            oWrite.WriteLine("   </Placemark>");
+
+        }
+
+        private StreamWriter OpenKMLFile(string KMLFileName)
+        {
+            //To prevent appending from multiple runs, we delete the existing file, if any.
+            if (File.Exists(KMLFileName))
+            {
+                File.Delete(KMLFileName);
+            }
+
+            //Create a new text file, to write the KML to
+            StreamWriter oWrite = File.CreateText(KMLFileName);
+
+            //Write the basic KML Header required so Google Earth can recognise the file as being KML
+            oWrite.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            oWrite.WriteLine("<kml xmlns=\"http://earth.google.com/kml/2.2\">");
+
+            //Start the Document
+            oWrite.WriteLine("<Document>");
+
+            //Choose a name, in this case we just use the filename.
+            //Note this will cause errors in GE, if the Filename contains punctuation characters which aren//t allowed in GE comments
+            oWrite.WriteLine("   <name>" + KMLFileName + "</name>");
+
+            //Add an optional description
+            oWrite.WriteLine("   <description> Google Earth KML file generated from an ERSI ShapeFile using MapWinGIS");
+            oWrite.WriteLine("   Shape File to KML converter written by Ben Freeman,modified by Lang at Ames Engineering. </description>");
+
+            //Define a style for the shapes 
+            oWrite.WriteLine("   <Style id=" + (char)34 + "Shape Style" + (char)34 + ">");
+            oWrite.WriteLine("      <LineStyle>");
+            oWrite.WriteLine("         <color>ffff66c6</color>");
+            oWrite.WriteLine("         <width>2</width>");
+            oWrite.WriteLine("      </LineStyle>");
+            oWrite.WriteLine("      <PolyStyle>");
+            oWrite.WriteLine("         <color>5fff66c6</color>");
+            oWrite.WriteLine("      </PolyStyle>");
+            oWrite.WriteLine("   </Style>");
+
+            //Open a folder for all the Shapes
+            oWrite.WriteLine("   <Folder>");
+            oWrite.WriteLine("      <name>Shapes</name>");
+
+            //Return the file handle
+            return oWrite;
+        }
+
+        private void CloseKMLFile(ref StreamWriter oWrite)
+        {
+
+            //Close kml document contents
+            oWrite.WriteLine("   </Folder>");
+            oWrite.WriteLine("</Document>");
+            oWrite.WriteLine("</kml>");
+
+            //Close the file
+            oWrite.Close();
+        }
         public void addArcGISService()
         {
             int ID = (int)tkTileProvider.ProviderCustom;
@@ -1188,6 +1468,7 @@ namespace UsePanels
 
         private void toolStripButton6_Click(object sender, EventArgs e)
         {
+            //clear all selections in all layers 
             for (int i = 0; i < axMap1.NumLayers; i++)
             {
                 int layerHandle = axMap1.get_LayerHandle(i);
@@ -1270,6 +1551,70 @@ namespace UsePanels
             {
                 MessageBox.Show("No Record To Export !!!", "Info");
             }
+        }
+
+        private void shapefileToKMLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //make sure mapproject is geographic (ie: WGS84)
+            axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
+            //var c = axMap1.NumLayers;
+            //Console.WriteLine("Layers in map: " + c.ToString());
+            //if (c == 0)
+            //{
+            //    MessageBox.Show("No layers in map, need to add one");
+            //    return;
+            //}
+            string[] filenames = openFile();
+            if (filenames == null || filenames.Length == 0)
+            {
+                return;
+            }
+
+            int counter = 0;
+            string filePath = Path.GetDirectoryName(filenames[0]);
+            string logFile = Path.Combine(filePath, "log.txt");
+            using (StreamWriter w = File.AppendText(logFile)) //create one if not exist, else append to the existing one
+            {
+                try
+                {               
+                    w.WriteLine(filenames.Length + " shape files to be converted:");
+                
+                    foreach (string f in filenames)
+                    {
+                        Shapefile sf = new Shapefile();
+                        if (f.EndsWith(".shp"))
+                        {
+                            sf.Open(f);
+                            ConvertShapeFileToKML(f.Replace(".shp", ".kml"), sf);
+                            w.WriteLine(f + " converted to kml.");
+                            counter += 1; 
+                        }
+                        else
+                        {
+                           MessageBox.Show(f + " is not a shapefile, will not convert.");
+                            w.WriteLine(f + " cannot be converted to kml.");
+                        }                       
+                    }
+                    w.WriteLine(counter + " shapefiles converted to kml.");
+                }
+                catch (Exception EX)
+                {
+                    w.WriteLine(EX.ToString());
+                }
+            }           
+        }
+
+        private void shapefileToKMLToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            //make sure mapproject is geographic (ie: WGS84)
+            //axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
+            //var c = axMap1.NumLayers;
+            // int layerHandle = getLayerHandle();  
+            //var sf = new Shapefile();
+            int layerHandle = getLayerHandle();
+            Shapefile sf = axMap1.get_Shapefile(layerHandle);
+            string kmlfileName = saveFile("kml");
+              ConvertShapeFileToKML(kmlfileName,sf);
         }
     }
 
