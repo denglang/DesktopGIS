@@ -426,6 +426,7 @@ namespace UsePanels
         private void zoomToLayerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int layerHandle = getLayerHandle();
+            axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
             axMap1.ZoomToLayer(layerHandle);
         }
 
@@ -1616,8 +1617,123 @@ namespace UsePanels
             string kmlfileName = saveFile("kml");
               ConvertShapeFileToKML(kmlfileName,sf);
         }
+
+        public void CreateBuffer(ToolStripStatusLabel label)
+        {
+            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
+            //string filename = dataPath + "waterways.shp";
+            //if (!File.Exists(filename))
+            //{
+            //    MessageBox.Show("The shapefile with rivers wasn't found: " + filename);
+            //}
+            //else
+            int handle = getLayerHandle();
+            var callback = new Callback(label);
+
+            var sf = new Shapefile();
+            sf = axMap1.get_Shapefile(handle);
+            //if (!sf.Open(filename, callback))
+            //{
+            //    MessageBox.Show(sf.ErrorMsg[sf.LastErrorCode]);
+            //}
+            //else
+            //{
+            int layerHandle = axMap1.AddLayer(sf, true);
+            sf = axMap1.get_Shapefile(layerHandle);     // in case a copy of shapefile was created by GlobalSettings.ReprojectLayersOnAdding
+
+            var utils = new Utils();
+            sf.DefaultDrawingOptions.LineWidth = 3.0f;
+            sf.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.Blue);
+
+            const double distance = 150; // meters
+            var buffers = new List<Shapefile>();
+            for (int i = 1; i < 5; i++)
+            {
+                Shapefile sfBuffer = sf.BufferByDistance(distance * i, 30, false, true);
+                if (sfBuffer == null)
+                {
+                    MessageBox.Show("Failed to calculate the buffer: " + sf.ErrorMsg[sf.LastErrorCode]);
+                    return;
+                }
+                else
+                {
+                    sfBuffer.GlobalCallback = callback;
+                    buffers.Add(sfBuffer);
+                }
+            }
+            // now subtract smaller buffers from larger ones
+            for (int i = buffers.Count - 1; i > 0; i--)
+            {
+                Shapefile sfDiff = buffers[i].Difference(false, buffers[i - 1], false);
+                if (sfDiff == null)
+                {
+                    MessageBox.Show("Failed to calculate the difference: " + sf.ErrorMsg[sf.LastErrorCode]);
+                    return;
+                }
+                else
+                {
+                    buffers[i] = sfDiff;
+                }
+            }
+            // pass all the resulting shapes to a single shapefile and mark their distance
+            Shapefile sfResult = buffers[0].Clone();
+            sfResult.GlobalCallback = callback;
+            int fieldIndex = sfResult.EditAddField("Buffer_D", FieldType.DOUBLE_FIELD, 10, 12);
+
+            for (int i = 0; i < buffers.Count; i++)
+            {
+                Shapefile sfBuffer = buffers[i];
+                for (int j = 0; j < sfBuffer.NumShapes; j++)
+                {
+                    int index = sfResult.NumShapes;
+                    sfResult.EditInsertShape(sfBuffer.Shape[j].Clone(), ref index);
+                    sfResult.EditCellValue(fieldIndex, index, distance * (i + 1));
+                }
+            }
+
+            // create visualization categories
+            sfResult.DefaultDrawingOptions.FillType = tkFillType.ftStandard;
+            sfResult.Categories.Generate(fieldIndex, tkClassificationType.ctUniqueValues, 0);
+            sfResult.Categories.ApplyExpressions();
+            // apply color scheme
+            var scheme = new ColorScheme();
+            scheme.SetColors2(tkMapColor.LightBlue, tkMapColor.LightYellow);
+            sfResult.Categories.ApplyColorScheme(tkColorSchemeType.ctSchemeGraduated, scheme);
+            layerHandle = axMap1.AddLayer(sfResult, true);
+            axMap1.ZoomToLayer(layerHandle);
+            axMap1.Redraw();
+            //sfResult.SaveAs(@"c:\buffers.shp", null);
+            //}
+
+        }
+
+        private void bufferToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateBuffer(toolStripStatusLabel1);
+        }
     }
 
+
+    class Callback : ICallback
+    {
+        private ToolStripStatusLabel m_label = null;
+        public Callback(ToolStripStatusLabel label)
+        {
+            m_label = label;
+            if (label == null)
+                throw new NullReferenceException("No reference to the label was provided");
+        }
+
+        public void Error(string KeyOfSender, string ErrorMsg)
+        {
+            Debug.Print("Error reported: " + ErrorMsg);
+        }
+        public void Progress(string KeyOfSender, int Percent, string Message)
+        {
+            m_label.Text = Message + ": " + Percent + "%";
+            Application.DoEvents();
+        }
+    }
     public class readARD
     {
         public AmesData data;

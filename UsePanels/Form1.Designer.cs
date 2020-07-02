@@ -70,6 +70,7 @@
             this.chkBox_addBaseMap = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.bufferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -260,35 +261,36 @@
             this.openAttributeToolStripMenuItem,
             this.removeLayerToolStripMenuItem,
             this.removeAllLayersToolStripMenuItem,
-            this.exportToolStripMenuItem});
+            this.exportToolStripMenuItem,
+            this.bufferToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 158);
             // 
             // zoomToLayerToolStripMenuItem
             // 
             this.zoomToLayerToolStripMenuItem.Name = "zoomToLayerToolStripMenuItem";
-            this.zoomToLayerToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.zoomToLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.zoomToLayerToolStripMenuItem.Text = "Zoom To Layer";
             this.zoomToLayerToolStripMenuItem.Click += new System.EventHandler(this.zoomToLayerToolStripMenuItem_Click);
             // 
             // openAttributeToolStripMenuItem
             // 
             this.openAttributeToolStripMenuItem.Name = "openAttributeToolStripMenuItem";
-            this.openAttributeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.openAttributeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openAttributeToolStripMenuItem.Text = "Open Attribute";
             this.openAttributeToolStripMenuItem.Click += new System.EventHandler(this.openAttributeToolStripMenuItem_Click);
             // 
             // removeLayerToolStripMenuItem
             // 
             this.removeLayerToolStripMenuItem.Name = "removeLayerToolStripMenuItem";
-            this.removeLayerToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.removeLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.removeLayerToolStripMenuItem.Text = "Remove Layer";
             this.removeLayerToolStripMenuItem.Click += new System.EventHandler(this.removeLayerToolStripMenuItem_Click);
             // 
             // removeAllLayersToolStripMenuItem
             // 
             this.removeAllLayersToolStripMenuItem.Name = "removeAllLayersToolStripMenuItem";
-            this.removeAllLayersToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.removeAllLayersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.removeAllLayersToolStripMenuItem.Text = "Remove All Layers";
             this.removeAllLayersToolStripMenuItem.Click += new System.EventHandler(this.removeAllLayersToolStripMenuItem_Click);
             // 
@@ -298,7 +300,7 @@
             this.toShapefileToolStripMenuItem,
             this.shapefileToKMLToolStripMenuItem1});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // toShapefileToolStripMenuItem
@@ -446,6 +448,13 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
+            // bufferToolStripMenuItem
+            // 
+            this.bufferToolStripMenuItem.Name = "bufferToolStripMenuItem";
+            this.bufferToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.bufferToolStripMenuItem.Text = "Buffer";
+            this.bufferToolStripMenuItem.Click += new System.EventHandler(this.bufferToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -520,6 +529,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripMenuItem shapefileToKMLToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem bufferToolStripMenuItem;
     }
 }
 
