@@ -58,6 +58,9 @@
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toShapefileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shapefileToKMLToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.bufferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeLineSymbolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsBtnAddFile = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -70,7 +73,7 @@
             this.chkBox_addBaseMap = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.bufferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chkToggleLabelWin = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -246,6 +249,7 @@
             // treeView1
             // 
             this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
+            this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 51);
             this.treeView1.Name = "treeView1";
             this.treeView1.ShowLines = false;
@@ -253,6 +257,9 @@
             this.treeView1.Size = new System.Drawing.Size(177, 614);
             this.treeView1.TabIndex = 3;
             this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
+            this.treeView1.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView1_BeforeSelect);
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseDown);
             // 
             // contextMenuStrip1
             // 
@@ -262,35 +269,37 @@
             this.removeLayerToolStripMenuItem,
             this.removeAllLayersToolStripMenuItem,
             this.exportToolStripMenuItem,
-            this.bufferToolStripMenuItem});
+            this.bufferToolStripMenuItem,
+            this.labelToolStripMenuItem,
+            this.changeLineSymbolToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 158);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(184, 180);
             // 
             // zoomToLayerToolStripMenuItem
             // 
             this.zoomToLayerToolStripMenuItem.Name = "zoomToLayerToolStripMenuItem";
-            this.zoomToLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.zoomToLayerToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.zoomToLayerToolStripMenuItem.Text = "Zoom To Layer";
             this.zoomToLayerToolStripMenuItem.Click += new System.EventHandler(this.zoomToLayerToolStripMenuItem_Click);
             // 
             // openAttributeToolStripMenuItem
             // 
             this.openAttributeToolStripMenuItem.Name = "openAttributeToolStripMenuItem";
-            this.openAttributeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openAttributeToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.openAttributeToolStripMenuItem.Text = "Open Attribute";
             this.openAttributeToolStripMenuItem.Click += new System.EventHandler(this.openAttributeToolStripMenuItem_Click);
             // 
             // removeLayerToolStripMenuItem
             // 
             this.removeLayerToolStripMenuItem.Name = "removeLayerToolStripMenuItem";
-            this.removeLayerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeLayerToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.removeLayerToolStripMenuItem.Text = "Remove Layer";
             this.removeLayerToolStripMenuItem.Click += new System.EventHandler(this.removeLayerToolStripMenuItem_Click);
             // 
             // removeAllLayersToolStripMenuItem
             // 
             this.removeAllLayersToolStripMenuItem.Name = "removeAllLayersToolStripMenuItem";
-            this.removeAllLayersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeAllLayersToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.removeAllLayersToolStripMenuItem.Text = "Remove All Layers";
             this.removeAllLayersToolStripMenuItem.Click += new System.EventHandler(this.removeAllLayersToolStripMenuItem_Click);
             // 
@@ -300,7 +309,7 @@
             this.toShapefileToolStripMenuItem,
             this.shapefileToKMLToolStripMenuItem1});
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.exportToolStripMenuItem.Text = "Export";
             // 
             // toShapefileToolStripMenuItem
@@ -316,6 +325,27 @@
             this.shapefileToKMLToolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
             this.shapefileToKMLToolStripMenuItem1.Text = "Shapefile to KML";
             this.shapefileToKMLToolStripMenuItem1.Click += new System.EventHandler(this.shapefileToKMLToolStripMenuItem1_Click);
+            // 
+            // bufferToolStripMenuItem
+            // 
+            this.bufferToolStripMenuItem.Name = "bufferToolStripMenuItem";
+            this.bufferToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.bufferToolStripMenuItem.Text = "Buffer";
+            this.bufferToolStripMenuItem.Click += new System.EventHandler(this.bufferToolStripMenuItem_Click);
+            // 
+            // labelToolStripMenuItem
+            // 
+            this.labelToolStripMenuItem.Name = "labelToolStripMenuItem";
+            this.labelToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.labelToolStripMenuItem.Text = "Label";
+            this.labelToolStripMenuItem.Click += new System.EventHandler(this.labelToolStripMenuItem_Click);
+            // 
+            // changeLineSymbolToolStripMenuItem
+            // 
+            this.changeLineSymbolToolStripMenuItem.Name = "changeLineSymbolToolStripMenuItem";
+            this.changeLineSymbolToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.changeLineSymbolToolStripMenuItem.Text = "Change Line Symbol";
+            this.changeLineSymbolToolStripMenuItem.Click += new System.EventHandler(this.changeLineSymbolToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -448,18 +478,23 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
-            // bufferToolStripMenuItem
+            // chkToggleLabelWin
             // 
-            this.bufferToolStripMenuItem.Name = "bufferToolStripMenuItem";
-            this.bufferToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.bufferToolStripMenuItem.Text = "Buffer";
-            this.bufferToolStripMenuItem.Click += new System.EventHandler(this.bufferToolStripMenuItem_Click);
+            this.chkToggleLabelWin.AutoSize = true;
+            this.chkToggleLabelWin.Location = new System.Drawing.Point(419, 28);
+            this.chkToggleLabelWin.Name = "chkToggleLabelWin";
+            this.chkToggleLabelWin.Size = new System.Drawing.Size(103, 17);
+            this.chkToggleLabelWin.TabIndex = 8;
+            this.chkToggleLabelWin.Text = "ToggleLabelBox";
+            this.chkToggleLabelWin.UseVisualStyleBackColor = true;
+            this.chkToggleLabelWin.CheckedChanged += new System.EventHandler(this.chkToggleLabelWin_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1092, 716);
+            this.Controls.Add(this.chkToggleLabelWin);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.chkBox_addBaseMap);
             this.Controls.Add(this.toolStrip1);
@@ -469,7 +504,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Select ";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).EndInit();
             this.panel1.ResumeLayout(false);
@@ -530,6 +565,9 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripMenuItem shapefileToKMLToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem bufferToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem labelToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkToggleLabelWin;
+        private System.Windows.Forms.ToolStripMenuItem changeLineSymbolToolStripMenuItem;
     }
 }
 

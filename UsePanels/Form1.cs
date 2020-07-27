@@ -10,12 +10,15 @@ using System.Windows.Forms;
 using AmesDataFormat;
 using MapWinGIS_AE;
 using System.Text;
+using System.Drawing;
 
 namespace UsePanels
 {
     public partial class Form1 : Form
     {
         public Dictionary<string, int> layerControl = new Dictionary<string, int>();
+        ListBox lstBShapeFields = new ListBox();
+        
         public bool drag;
         public int mouseX;
         public int mouseY;
@@ -37,6 +40,8 @@ namespace UsePanels
             axMap1.SendMouseDown = true; 
             axMap1.ShapeIdentified += axMap1_ShapeIdentified;
             axMap1.ShapeHighlighted += AxMap1ShapeHighlighted;
+
+            treeView1.HideSelection = false;
         }
         private ToolStripStatusLabel m_label = null;
         private void Form1_Load(object sender, EventArgs e)
@@ -271,7 +276,7 @@ namespace UsePanels
                     treeView1.Nodes.Add(N);
                     //N.Checked = true;
                     N.SelectedImageIndex = N.ImageIndex;
-                    ColorCodeShape(sf);
+                    //ColorCodeShape(sf);
                     //    //Utils utils = new Utils();                  
                     //    //sf.DefaultDrawingOptions.LineWidth = 2;
                     //    // sf.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.Blue);
@@ -656,8 +661,13 @@ namespace UsePanels
                 }
 
             }
-            axMap1.Refresh();
+            //axMap1.Refresh();
             axMap1.Redraw();
+            //axMap1.ZoomToWorld();
+           // string nam = Path.GetFileNameWithoutExtension(sf.Filename);
+           // MessageBox.Show(nam);
+            
+            //axMap1.ZoomToLayer(layerControl[nam]);
         }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
@@ -1469,6 +1479,10 @@ namespace UsePanels
 
         private void toolStripButton6_Click(object sender, EventArgs e)
         {
+            clearSelections();
+        }
+        private void clearSelections()
+        {
             //clear all selections in all layers 
             for (int i = 0; i < axMap1.NumLayers; i++)
             {
@@ -1478,7 +1492,6 @@ namespace UsePanels
                 axMap1.Redraw();
             }
         }
-
         private void contextMenuStrip2_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
@@ -1710,6 +1723,232 @@ namespace UsePanels
         private void bufferToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateBuffer(toolStripStatusLabel1);
+        }
+
+        private void labelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lstBShapeFields.Location = new System.Drawing.Point(700, 60);
+            //lstBShapeFields.Name = "lstBShapeFields";
+            lstBShapeFields.Text = "Choose Field to Label:";
+            lstBShapeFields.Size = new System.Drawing.Size(100, 200);
+            lstBShapeFields.BackColor = Color.Green;
+            lstBShapeFields.ForeColor = Color.White;
+            //subscribe the event
+            lstBShapeFields.SelectedIndexChanged += lstBShapeFields_SelectedIndexChanged;
+            this.Controls.Add(lstBShapeFields);
+
+            lstBShapeFields.BringToFront();
+            if (labelToolStripMenuItem.Checked == true)
+            {
+                labelToolStripMenuItem.Checked = false;
+                lstBShapeFields.Hide();
+                //chkToggleLabelWin.Checked = false;
+            }
+            else
+            {
+                labelToolStripMenuItem.Checked = true;
+                lstBShapeFields.Show();
+                //chkToggleLabelWin.Checked = true; 
+            }
+
+            UpdateFieldsList();
+           
+        }
+
+        private void UpdateFieldsList()
+        {
+            int layerHandle = getLayerHandle();
+            //lableling doesn't work on line feature if not in google_mercator
+            // axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
+            // axMap1.ZoomToLayer(layerHandle);
+            var sf = new Shapefile();
+
+            sf = axMap1.get_Shapefile(layerHandle);
+            lstBShapeFields.Items.Clear();
+            for (int i = 0; i < sf.NumFields; i++)
+            {
+                // listBox1.Items.Add(sf.Field[i].Name);
+                lstBShapeFields.Items.Add(sf.Field[i].Name);
+
+            }
+        }
+        private void lstBShapeFields_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+
+            //MessageBox.Show("Index Change Fired");
+            int layerHandle = getLayerHandle();
+
+            var sf = new Shapefile();
+
+            sf = axMap1.get_Shapefile(layerHandle);
+
+
+            // Get the currently selected item in the ListBox.
+
+            string labelFiledName = lstBShapeFields.SelectedItem.ToString();
+            ///////////////////////////////
+            int fieldIndex = sf.Table.get_FieldIndexByName(labelFiledName);
+
+            //sf.Field.GetType()
+
+            //double valField = 0.00;
+            // get average of a numberic field, has some issue.
+            //for (int i = 0; i < sf.NumShapes; i++)
+            //{
+            //    valField += Convert.ToDouble(sf.CellValue[fieldIndex, i]);
+            //}
+            // string averageVal = (valField / sf.NumShapes).ToString();
+            // MessageBox.Show("Average: "+averageVal);
+            //labelFiledName = curItem;
+
+            if (labelToolStripMenuItem.Checked == false)
+            {
+                if (sf.ShapefileType == ShpfileType.SHP_POLYLINE)
+                {
+                    sf.Labels.Generate("[" + labelFiledName + "]", tkLabelPositioning.lpMiddleSegment, false);
+                }
+                else
+                {
+                    sf.Labels.Generate("[" + labelFiledName + "]", tkLabelPositioning.lpCentroid, false);
+                }
+                //sf.Labels.Generate("[COUNTY]", tkLabelPositioning.lpCentroid, false);
+                sf.Labels.Synchronized = true;
+                sf.Labels.TextRenderingHint = tkTextRenderingHint.SystemDefault;
+                axMap1.Redraw();
+                labelToolStripMenuItem.Checked = true; //add check mark to the menu item
+            }
+            else
+            {
+                sf.Labels.Clear(); //remove all labels
+                axMap1.Redraw();
+                labelToolStripMenuItem.Checked = false;
+            }
+        }
+
+        private void chkToggleLabelWin_CheckedChanged(object sender, EventArgs e)
+        {
+            int handle = getLayerHandle();
+
+            if (lstBShapeFields.Visible)
+            {
+                lstBShapeFields.Hide();
+                this.Text = "Hide Label Box";
+                
+            }
+            else
+            {
+                lstBShapeFields.Show();
+                this.Text = "Show Label Box";
+                UpdateFieldsList();
+            }
+        }
+
+        private void changeLineSymbolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int layerHandle = getLayerHandle();
+            Shapefile sf = axMap1.get_Shapefile(layerHandle);
+
+            TreeNode nd = treeView1.SelectedNode;
+            int id=nd.SelectedImageIndex;
+
+            Bitmap image1 = (Bitmap)treeView1.ImageList.Images[id];
+            int x, y;
+            for (x = 0; x < image1.Width; x++)
+            {
+                for (y = 0; y < image1.Height; y++)
+                {
+                    Color pixelColor = image1.GetPixel(x, y);
+                    Color newColor = Color.FromArgb(pixelColor.R, 0, 0);
+                    image1.SetPixel(x, y, newColor);
+                }
+            }
+
+            //clear all selections in map
+            clearSelections();
+            //axMap1.Refresh();
+            frmColorCodeLine fm = Application
+              .OpenForms
+              .OfType<frmColorCodeLine>()
+              .LastOrDefault();
+            if (fm == null)
+            {
+                fm = new frmColorCodeLine();//(ref sf);
+                fm.Show();
+            }
+            else fm.Activate();
+            //frmColorCodeLine fm = new frmColorCodeLine(ref sf);
+            fm.lstIRIValue.Items.Clear();
+            fm.Text = sf.Filename;// + "Color Code Break";
+
+            int fieldIndex = -1;
+            string[] iriNamelist = { "IRI Averag", "IRI", "IRI_Left", "IRI_Right" };
+
+            for (int i = 0; i < iriNamelist.Length; i++)
+            {
+                //MessageBox.Show(iriNamelist[i]);
+                fieldIndex = sf.Table.FieldIndexByName[iriNamelist[i]];
+
+                if (fieldIndex > -1)
+                {
+                    fm.lblFieldName.Text = iriNamelist[i] + " Field Values:";
+                    break;
+                }
+            }
+            //fieldIndex = sf.Table.FieldIndexByName["IRI Averag"];
+            if (fieldIndex == -1)
+            {
+                MessageBox.Show("No IRI field found in shapefile " + sf.Filename);
+                return;
+            }
+            List<double> IriList = new List<double>();
+            for (int i = 0; i < sf.NumShapes; i++)
+            {
+                double value = (double)sf.get_CellValue(fieldIndex, i);
+                fm.lstIRIValue.Items.Add(value);
+                fm.lstIRIValue.Sorted = true;
+                IriList.Add(value);
+            }
+
+            double average = IriList.Average();
+            double sumOfSquaresOfDifferences = IriList.Select(val => (val - average) * (val - average)).Sum();
+            double sd = Math.Sqrt(sumOfSquaresOfDifferences / IriList.Count);
+            string poorValue = Math.Round(average + sd).ToString();
+            string goodValue = Math.Round(average - sd).ToString();
+
+            fm.label10.Text = "Total line section: " + IriList.Count + " /Average: " + Math.Round(average).ToString();
+            fm.txtFair.Text = poorValue; //.PadLeft(3,'0');          
+            fm.txtGood.Text = goodValue;//.PadLeft(3,'0');
+                                        //fm.BringToFront();
+                                        //axMap1.SendToBack();
+                                        // managerForm.CreateShape += ManagerForm_CreateShape;
+            //fm.ColorCodeShape += ColorCodeShape;  //add to delegate 
+            fm.Show();
+        }
+
+        private void treeView1_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+        {
+            //Unhighlight old node
+            if (treeView1.SelectedNode != null)
+            {
+                treeView1.SelectedNode.BackColor = SystemColors.Window;
+                treeView1.SelectedNode.ForeColor = SystemColors.WindowText;
+            }
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            //Highlight new node
+            treeView1.SelectedNode.BackColor = SystemColors.Highlight;
+            treeView1.SelectedNode.ForeColor = SystemColors.HighlightText;
+        }
+        // the node selection occurs on MouseUp instead of MouseDown,
+        //and that nothing is highlighted while the mouse is down on subsequent selections.
+        //To remedy this, simply select the node in the MouseDown event:
+        private void treeView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            TreeNode node = treeView1.GetNodeAt(e.X, e.Y);
+            if (node != null) treeView1.SelectedNode = node;
+            
         }
     }
 
