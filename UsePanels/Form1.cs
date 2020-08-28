@@ -247,6 +247,11 @@ namespace UsePanels
                 treeView1.ImageList = myImageList;
                 treeView1.CheckBoxes = true; //show checkbox of each node
 
+                foreach (TreeNode node  in treeView1.Nodes)
+                {
+                    node.Checked = true; 
+                }
+
                 //System.Drawing.Image.FromHbitmap()
                 // MessageBox.Show(axMap1.get_LayerFilename(layerHandle));
                 //MessageBox.Show(axMap1.get_LayerDescription(layerHandle));
@@ -260,6 +265,7 @@ namespace UsePanels
                 axMap1.ZoomToLayer(layerHandle);
                 var sf = new Shapefile();
                 sf = axMap1.get_Shapefile(layerHandle);
+
                 //sf.GenerateLabels(9, tkLabelPositioning.lpCentroid);
                 //if (sf.ShapefileType == ShpfileType.SHP_POLYGON)
                 //{
@@ -277,9 +283,9 @@ namespace UsePanels
                     //N.Checked = true;
                     N.SelectedImageIndex = N.ImageIndex;
                     //ColorCodeShape(sf);
-                    //    //Utils utils = new Utils();                  
-                    //    //sf.DefaultDrawingOptions.LineWidth = 2;
-                    //    // sf.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.Blue);
+                    Utils utils = new Utils();                  
+                    sf.DefaultDrawingOptions.LineWidth = 2;
+                     sf.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.Blue);
                 }
                 else if (sf.ShapefileType == ShpfileType.SHP_POINT)
                 {
@@ -301,6 +307,7 @@ namespace UsePanels
                 }
                 else if (sf.ShapefileType == ShpfileType.SHP_POLYGON)
                 {
+                    //ShowLegend(sf);
                     TreeNode N = new TreeNode(fname);
                     N.ImageIndex = 2;
                     treeView1.Nodes.Add(N);
@@ -333,7 +340,33 @@ namespace UsePanels
             }
         }
 
-        private void ShowLegend()
+        public void CheckAllNodes(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                node.Checked = true;
+                CheckChildren(node, true);
+            }
+        }
+
+        public void UncheckAllNodes(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                node.Checked = false;
+                CheckChildren(node, false);
+            }
+        }
+
+        private void CheckChildren(TreeNode rootNode, bool isChecked)
+        {
+            foreach (TreeNode node in rootNode.Nodes)
+            {
+                CheckChildren(node, isChecked);
+                node.Checked = isChecked;
+            }
+        }
+        private void ShowLegend(Shapefile sf)
         {
             int width = 40;
             int height = 20;
@@ -342,7 +375,7 @@ namespace UsePanels
             Labels labels = axMap1.get_DrawingLabels(drawHandle);
             if (labels != null)
                 labels.Alignment = tkLabelAlignment.laBottomRight;
-            Shapefile sf = new Shapefile();
+            //Shapefile sf = new Shapefile();
             string message = "";
             for (int i = 0; i < axMap1.NumLayers; i++)
             {
@@ -558,9 +591,11 @@ namespace UsePanels
             var fileContent = string.Empty;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-
-                //openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = fileType + " Files (*." + fileType + ")|*." + fileType;
+                if (fileType.Contains("image"))
+                {
+                    openFileDialog.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+                } else openFileDialog.Filter = fileType + " Files (*." + fileType + ")|*." + fileType;
+               
                 //MessageBox.Show(openFileDialog.Filter);
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
@@ -607,6 +642,15 @@ namespace UsePanels
             var scheme = new ColorScheme();
 
             Utils utils = new Utils();
+
+            //sf.DefaultDrawingOptions.UseLinePattern = false;
+            //sf.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.DarkRed);
+            //sf.DefaultDrawingOptions.LineWidth = 2;
+            //axMap1.Redraw();
+            //ShapefileCategory ct = sf.Categories.Add("Poor");
+            //ct = sf.Categories.Add("Good");
+            //ct = sf.Categories.Add("Fair");
+            //ct.DrawingOptions.UseLinePattern = false;
 
             for (int i = 0; i < sf.NumShapes; i++)
             {
@@ -842,7 +886,11 @@ namespace UsePanels
         {
             var fileContent = string.Empty;
             int layerHandle = -1;
-            string[] filenames = openFile("jpg");
+
+            var img = new MapWinGIS.Image();
+
+            string[] filenames = openFile("image");
+           // OpenFileDialog dlg = new OpenFileDialog { Filter = img.CdlgFilter };
             if (filenames == null || filenames.Length == 0)
             {
                 //MessageBox.Show("Nothing selected");
@@ -851,31 +899,39 @@ namespace UsePanels
 
             foreach (string f in filenames)
             {
-                //MessageBox.Show(f);
-                var img = new MapWinGIS.Image();
+                MessageBox.Show(f);
+                if (f.ToLower().EndsWith(".tif") || f.ToLower().EndsWith(".jpg")
+                          ||  f.ToLower().EndsWith(".png")) { 
+                    
 
-                if (img.Open(f))
-                {
-                    layerHandle = axMap1.AddLayer(img, true);
-                    string path = axMap1.get_LayerFilename(layerHandle);
+                    if (img.Open(f))//,ImageType.JPEG_FILE,false,null))
+                    {
+                        layerHandle = axMap1.AddLayer(img, true);
+                        if (layerHandle == -1)
+                        {
+                            Debug.Print(f + " cannot be added to map");
+                            return; 
+                        }
+                        string path = axMap1.get_LayerFilename(layerHandle);
 
-                    string layerName = Path.GetFileNameWithoutExtension(path);
+                        string layerName = Path.GetFileNameWithoutExtension(path);
 
-                    layerControl.Add(layerName, layerHandle);
+                        layerControl.Add(layerName, layerHandle);
 
-                    //hide all menustrips that are only applied to shapefiles 
-                    TreeNode N = new TreeNode(layerName);
-                    N.ImageIndex = 3;
-                    treeView1.Nodes.Add(N);
-                    //treeView1.Nodes.Add(layerName);
-                    //contextMenuStrip1.Items[2].Visible = false;
-                    //contextMenuStrip1.Items[3].Visible = false;
-                    //contextMenuStrip1.Items[4].Visible = false;
-                    //contextMenuStrip1.Items[8].Visible = false;
-                }
-                else
-                {
-                    Debug.WriteLine("Failed to open image: " + img.get_ErrorMsg(img.LastErrorCode));
+                        //hide all menustrips that are only applied to shapefiles 
+                        TreeNode N = new TreeNode(layerName);
+                        N.ImageIndex = 3;
+                        treeView1.Nodes.Add(N);
+                        //treeView1.Nodes.Add(layerName);
+                        //contextMenuStrip1.Items[2].Visible = false;
+                        //contextMenuStrip1.Items[3].Visible = false;
+                        //contextMenuStrip1.Items[4].Visible = false;
+                        //contextMenuStrip1.Items[8].Visible = false;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Failed to open image: " + img.get_ErrorMsg(img.LastErrorCode));
+                    }
                 }
             }
         }
@@ -1832,13 +1888,13 @@ namespace UsePanels
             if (lstBShapeFields.Visible)
             {
                 lstBShapeFields.Hide();
-                this.Text = "Hide Label Box";
+                this.Text = "Show Label Box";
                 
             }
             else
             {
                 lstBShapeFields.Show();
-                this.Text = "Show Label Box";
+                this.Text = "Hide Label Box";
                 UpdateFieldsList();
             }
         }
@@ -1862,7 +1918,7 @@ namespace UsePanels
                     image1.SetPixel(x, y, newColor);
                 }
             }
-
+            pictureBox1.Image = image1;
             //clear all selections in map
             clearSelections();
             //axMap1.Refresh();

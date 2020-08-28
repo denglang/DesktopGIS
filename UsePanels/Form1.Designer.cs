@@ -74,6 +74,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.chkToggleLabelWin = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -82,6 +83,7 @@
             this.contextMenuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // axMap1
@@ -489,11 +491,20 @@
             this.chkToggleLabelWin.UseVisualStyleBackColor = true;
             this.chkToggleLabelWin.CheckedChanged += new System.EventHandler(this.chkToggleLabelWin_CheckedChanged);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(67, 439);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox1.TabIndex = 9;
+            this.pictureBox1.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1092, 716);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.chkToggleLabelWin);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.chkBox_addBaseMap);
@@ -518,6 +529,7 @@
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -568,6 +580,7 @@
         private System.Windows.Forms.ToolStripMenuItem labelToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkToggleLabelWin;
         private System.Windows.Forms.ToolStripMenuItem changeLineSymbolToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
