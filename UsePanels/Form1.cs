@@ -586,14 +586,14 @@ namespace UsePanels
 
         private string[] openFile(string fileType)
         {
-            string filename = string.Empty;
+            //string filename = string.Empty;
             string[] fileNames = null;
-            var fileContent = string.Empty;
+           
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 if (fileType.Contains("image"))
                 {
-                    openFileDialog.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+                    openFileDialog.Filter = "Image files (*.jpg, *.jpeg, *.bmp, *.gif, *.png,*.tif) | *.jpg; *.jpeg; *.bmp; *.gif; *.png; *.tif";
                 } else openFileDialog.Filter = fileType + " Files (*." + fileType + ")|*." + fileType;
                
                 //MessageBox.Show(openFileDialog.Filter);
@@ -606,7 +606,7 @@ namespace UsePanels
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     //Get the path of specified file
-                    filename = openFileDialog.FileName;
+                    //filename = openFileDialog.FileName;
                     fileNames = openFileDialog.FileNames;
                 }
                 else
@@ -1012,15 +1012,34 @@ namespace UsePanels
         }
         private void aRDToShapefileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ArdToShapefile();
-        }
-        public void ArdToShapefile()
-        {
-            //string path = "";
-            //Cursor.Current = Cursors.WaitCursor;
-            string path = openFile("ard")[0];
+            string[] filenames = openFile("ard");
+            // OpenFileDialog dlg = new OpenFileDialog { Filter = img.CdlgFilter };
+            if (filenames == null || filenames.Length == 0)
+            {
+                //MessageBox.Show("Nothing selected");
+                return;
+            }
 
-            readARD ra = new readARD(path);
+            foreach (string file in filenames)
+            {
+                readARD ra = new readARD(file);
+
+                ArdToShapefile(file, ra,filenames.Length==1);
+            }          
+        }
+        public void ArdToShapefile(string file, readARD ra,bool oneFile)
+        {
+
+            int m = 0;
+            //Cursor.Current = Cursors.WaitCursor;
+            //MessageBox.Show(openFile("ard"));
+
+            //string[] st = openFile("ard");
+            //string path = st[0];
+            // string path = openFile("ard")[0];
+
+            //readARD ra = new readARD(path); original code for single ard
+
 
             Shapefile sf = new Shapefile();
             //sf.CreateNew("", ShpfileType.SHP_POLYLINE);
@@ -1068,10 +1087,20 @@ namespace UsePanels
                 double x = g0.LongitudeDecimalDegrees;
                 double y = g0.LatiudeDecimalDegrees;
                 Console.WriteLine(x.ToString() + "," + y.ToString());
-                double IRI_left = data.ProfileLeft.IntervalIRI(n * d, (n + 1) * d);
-                double IRI_right = data.ProfileRight.IntervalIRI(n * d, (n + 1) * d);
-                double z = g0.Elevation;
 
+                double IRI_left = 0; 
+                if (data.ProfileLeft != null)
+                {
+                    IRI_left = data.ProfileLeft.IntervalIRI(n * d, (n + 1) * d);
+                }               
+               
+                double IRI_right = 0;// 
+                if (data.ProfileRight != null)
+                {
+                    IRI_right = data.ProfileRight.IntervalIRI(n * d, (n + 1) * d);
+                }
+                double z = g0.Elevation;
+                
                 GPSPoint g1 = data.GPS.DistanceToGpsPoint((n + 1) * d);
                 double x1 = g1.LongitudeDecimalDegrees;
                 double y1 = g1.LatiudeDecimalDegrees;
@@ -1148,33 +1177,59 @@ namespace UsePanels
                 // totalLength -= d;
             } //while (totalLength-d >0);
             Cursor.Current = Cursors.Default;
-            string fname = Path.GetFileName(path).Replace(".ard", ".shp");
-            //string f = @"C:\work\GIS\data" + fname;
-            string f = "";
-            SaveFileDialog sfdialog = new SaveFileDialog();
-            sfdialog.Filter = "Shape File|*.shp";
-            sfdialog.FileName = fname;
-            sfdialog.Title = "Save Shapefile";
+            string shpFolder = "";
 
-            if (sfdialog.ShowDialog() == DialogResult.OK)
-            {             
-                f = sfdialog.FileName;
-            }
+            if (sf != null) {
+                m += 1;
+                string fname = Path.GetFileName(file).Replace(".ard", ".shp");
+                //string f = @"C:\work\GIS\data" + fname;
+                string f = "";
+               
+
+                if (oneFile)
+                { 
+                    SaveFileDialog sfdialog = new SaveFileDialog();
+                    sfdialog.Filter = "Shape File|*.shp";
+                    sfdialog.FileName = fname;
+                    sfdialog.Title = "Save Shapefile";
+
+                    if (sfdialog.ShowDialog() == DialogResult.OK)
+                    {
+                        f = sfdialog.FileName;                   
+                    }
            
-            //File.Delete(f);
-            //deleteFiles(f);
-            // MessageBox.Show(f);
-            if (sf != null)
-            {
-                sf.SaveAs(f, null);
-                //frm.Hide();
-                // MessageBox.Show("Shapefile creatd and saved to " + f);
-                AddLayerToMap(f);
+                    //File.Delete(f);
+                    //deleteFiles(f);
+                    // MessageBox.Show(f);
+                    
+                    sf.SaveAs(f, null);
+                        //frm.Hide();
+                        // MessageBox.Show("Shapefile creatd and saved to " + f);
+                    AddLayerToMap(f);
+                    return; 
+                }
+                else //batch 
+                {                    
+                    string DirName = Path.GetDirectoryName(file);
+                    shpFolder = DirName + "\\ConvertedShape";
+                    System.IO.Directory.CreateDirectory(shpFolder);
+                    f = shpFolder + "\\" + fname;
+                    //if (File.Exists(f)) File.Delete(fname+".*");
+                    
+                    //MessageBox.Show(f);
+                    sf.SaveAs(f, null);
+                        //frm.Hide();
+                    // MessageBox.Show("Shapefile creatd and saved to " + f);
+                     AddLayerToMap(f);
+                }
+               // MessageBox.Show(string.Format("{0}.ard converted and saved to {1}", fname, shpFolder));
             }
             else
             {
                 MessageBox.Show("No shapefile created!");
+                return; 
             }
+          
         }
 
         private void ConvertShapeFileToKML(string KMLFileName, Shapefile sf)
