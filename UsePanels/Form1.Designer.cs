@@ -49,6 +49,10 @@
             this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectByLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.intersectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.zoomToLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,6 +79,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.chkToggleLabelWin = new System.Windows.Forms.CheckBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.labelToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -165,7 +170,9 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.conversionToolStripMenuItem,
-            this.selectionToolStripMenuItem});
+            this.selectionToolStripMenuItem,
+            this.toolsToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1092, 24);
@@ -247,6 +254,37 @@
             this.selectByLocationToolStripMenuItem.Name = "selectByLocationToolStripMenuItem";
             this.selectByLocationToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.selectByLocationToolStripMenuItem.Text = "Select By Location";
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.intersectToolStripMenuItem,
+            this.labelToolStripMenuItem1});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // intersectToolStripMenuItem
+            // 
+            this.intersectToolStripMenuItem.Name = "intersectToolStripMenuItem";
+            this.intersectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.intersectToolStripMenuItem.Text = "Intersect";
+            this.intersectToolStripMenuItem.Click += new System.EventHandler(this.intersectToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolHelpToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // toolHelpToolStripMenuItem
+            // 
+            this.toolHelpToolStripMenuItem.Name = "toolHelpToolStripMenuItem";
+            this.toolHelpToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.toolHelpToolStripMenuItem.Text = "Tool Help";
+            this.toolHelpToolStripMenuItem.Click += new System.EventHandler(this.toolHelpToolStripMenuItem_Click);
             // 
             // treeView1
             // 
@@ -499,6 +537,13 @@
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
             // 
+            // labelToolStripMenuItem1
+            // 
+            this.labelToolStripMenuItem1.Name = "labelToolStripMenuItem1";
+            this.labelToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.labelToolStripMenuItem1.Text = "Label";
+            this.labelToolStripMenuItem1.Click += new System.EventHandler(this.labelToolStripMenuItem1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -515,7 +560,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Select ";
+            this.Text = "AE GIS";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).EndInit();
             this.panel1.ResumeLayout(false);
@@ -581,6 +626,11 @@
         private System.Windows.Forms.CheckBox chkToggleLabelWin;
         private System.Windows.Forms.ToolStripMenuItem changeLineSymbolToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem intersectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolHelpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem labelToolStripMenuItem1;
     }
 }
 

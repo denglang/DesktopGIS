@@ -820,6 +820,7 @@ namespace UsePanels
                 axMap1.RemoveLayer(layerControl[layerName]);
                 layerControl.Remove(layerName);
                 treeView1.SelectedNode.Remove();
+                panel1.Hide(); //hide the attribute table
             } else
             {
                 MessageBox.Show(layerName + " is not found in map layer control; No layer removed.");
@@ -1057,7 +1058,7 @@ namespace UsePanels
 
             //double iri = ra.IRI;
             AmesData data = ra.data;
-
+            
             //GPSPoint[] points = ra.points; //doesn't work
             //GPSPoint[] points = ra.getPoints(path);
             //if (points != null) {
@@ -1214,7 +1215,16 @@ namespace UsePanels
                     shpFolder = DirName + "\\ConvertedShape";
                     System.IO.Directory.CreateDirectory(shpFolder);
                     f = shpFolder + "\\" + fname;
-                    //if (File.Exists(f)) File.Delete(fname+".*");
+                    //File.Delete(fname+".*");
+                    //if (File.Exists(f))
+                    //{
+                    //    string[] fs = Directory.GetFiles(shpFolder, fname.Replace(".shp", "") + ".*");
+                    //    foreach (string af in fs)
+                    //    {
+                    //        MessageBox.Show(af);
+                    //    }
+                    //    return; 
+                    //}
                     
                     //MessageBox.Show(f);
                     sf.SaveAs(f, null);
@@ -2060,6 +2070,153 @@ namespace UsePanels
             TreeNode node = treeView1.GetNodeAt(e.X, e.Y);
             if (node != null) treeView1.SelectedNode = node;
             
+        }
+        private void pictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            Rectangle ee = new Rectangle(10, 10, 30, 30);
+            using (Pen pen = new Pen(Color.Red, 2))
+            {
+                e.Graphics.DrawRectangle(pen, ee);
+            }
+        }
+        private void intersectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripStatusLabel label = new ToolStripStatusLabel();
+            string dataPath = @"C:\Work\GIS\data\USA\";
+            string filename1 = dataPath + "states.shp";
+            string filename2 = dataPath + "rivers.shp";
+
+            if (!File.Exists(filename1) || !File.Exists(filename2))
+            {
+                MessageBox.Show("The necessary files (waterways.shp, building.shp) are missing: " + dataPath);
+            }
+            else
+            {
+                Shapefile sfStates = new Shapefile();
+                sfStates.Open(filename1, null);
+                sfStates.StartEditingShapes(true, null);
+
+                Field field = new Field();
+                field.Name = "Length";
+                field.Type = FieldType.DOUBLE_FIELD;
+                field.Precision = 10;
+                int fieldIndex = sfStates.NumShapes;
+                sfStates.EditInsertField(field, ref fieldIndex, null);
+
+                Shapefile sfRivers = new Shapefile();
+                sfRivers.Open(filename2, null);
+                sfRivers.StartEditingShapes(true, null);
+                Utils utils = new Utils();
+                sfRivers.DefaultDrawingOptions.LineWidth = 2;
+                sfRivers.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.Blue);
+
+                Shapefile sfNew = sfRivers.Clone();
+                ShapeDrawingOptions options = sfNew.DefaultDrawingOptions;
+
+                LinePattern pattern = new LinePattern();
+                pattern.AddLine(utils.ColorByName(tkMapColor.Blue), 8, tkDashStyle.dsSolid);
+                pattern.AddLine(utils.ColorByName(tkMapColor.LightBlue), 4, tkDashStyle.dsSolid);
+                options.LinePattern = pattern;
+                options.UseLinePattern = true;
+
+                for (int i = 0; i < sfStates.NumShapes; i++)
+                {
+                    Shape shp1 = sfStates.get_Shape(i);
+                    double length = 0.0;    // the length of intersection
+
+                    for (int j = 0; j < sfRivers.NumShapes; j++)
+                    {
+                        Shape shp2 = sfRivers.get_Shape(j);
+                        if (shp1.Intersects(shp2))
+                        {
+                            Shape result = shp1.Clip(shp2, tkClipOperation.clIntersection);
+                            if (result != null)
+                            {
+                                int index = sfNew.EditAddShape(result);
+                                length += result.Length;
+                            }
+                        }
+                    }
+                    sfStates.EditCellValue(fieldIndex, i, length);
+                    label.Text = string.Format("Length: {0}/{1}", i + 1, sfStates.NumShapes);
+                    Application.DoEvents();
+                }
+
+               
+                // generating charts
+                ChartField chartField = new ChartField();
+                chartField.Name = "Length";
+                chartField.Color = utils.ColorByName(tkMapColor.LightBlue);
+                chartField.Index = fieldIndex;
+                sfStates.Charts.AddField(chartField);
+                sfStates.Charts.Generate(tkLabelPositioning.lpInteriorPoint);
+                sfStates.Charts.ChartType = tkChartType.chtBarChart;
+                sfStates.Charts.BarHeight = 100;
+                sfStates.Charts.ValuesVisible = true;
+                sfStates.Charts.Visible = true;
+
+                AddLayerToMap(filename1);
+                AddLayerToMap(filename2);
+                string newShape = dataPath + "interSect.shp";
+                if (sfNew.SaveAs(newShape, null))
+                {
+                    AddLayerToMap(newShape);
+                }
+                else  MessageBox.Show(newShape + " is not saved.");
+
+                //axMap1.AddLayer(sfStates, true);
+                //axMap1.AddLayer(sfRivers, true);
+                //axMap1.AddLayer(sfNew, true);
+                axMap1.ZoomToMaxExtents();
+            }
+        }
+
+        private void toolHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Map control uses the following built-in keyboard hotkeys:\n" +
+               " \n" +
+           "'+' - zoom in;\n" +
+           " \n" +
+           "'-' => zoom out;\n" +
+           " \n" +
+           "'*' => zoom to the closest tile level;\n" +
+           " \n" +
+           "'Home' => zoom to combined extents of all data layers(max extents);\n" +
+           " \n" +
+           "'Backspace' => zoom to previous extents;\n" +
+           " \n" +
+           "'Shift + Left, 'Shift + Right' => zoom to the prev / next layer;\n" +
+           " \n" +
+           "'Z' => ZoomIn tool;\n" +
+           " \n" +
+           "'M' => measuring tool: press first is for length, press again measues area.\n" +
+           " \n" +
+           "'Space' => switches to panning mode; after releasing shift the previous map cursor is restored;\n" +
+           " \n" +
+           "arrow keys => to move the map;\n" +
+           " \n" +
+           "mouse wheel => to zoom in/out regardless of the current tool.\n" +
+           " \n" +
+          "Hot keys will work if map is focused.It's enough to click the map with mouse to set input focus to it.");
+
+        }
+
+        private void labelToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            var sf = new Shapefile();
+            sf = axMap1.get_Shapefile(0);     // in case a copy of shapefile was created by GlobalSettings.ReprojectLayersOnAdding
+            int fieldIndex = 0;
+            for (int i = 0; i < sf.NumShapes; i++)
+            {
+                Shape shp = sf.Shape[i];
+                string text = sf.CellValue[fieldIndex, i].ToString();
+                MapWinGIS.Point pnt = shp.Centroid;
+                sf.Labels.AddLabel(text, pnt.x, pnt.y, 0.0, -1);
+                // the old method should be used like this
+                //axMap1.AddLabel(layerHandle, text, 0, pnt.x, pnt.y, tkHJustification.hjCenter);
+            }
+            sf.Labels.Synchronized = true;
+            axMap1.Redraw();
         }
     }
 
