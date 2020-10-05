@@ -11,6 +11,7 @@ using AmesDataFormat;
 using MapWinGIS_AE;
 using System.Text;
 using System.Drawing;
+using Microsoft.VisualBasic;
 
 namespace UsePanels
 {
@@ -18,18 +19,18 @@ namespace UsePanels
     {
         public Dictionary<string, int> layerControl = new Dictionary<string, int>();
         ListBox lstBShapeFields = new ListBox();
-        
+
         public bool drag;
         public int mouseX;
         public int mouseY;
         int n = 0;
         //int m = 0;
-        
+
         public Form1()
-         {
+        {
             InitializeComponent();
-            
-        new GlobalSettings() { AllowProjectionMismatch = true, ReprojectLayersOnAdding = true };
+
+            new GlobalSettings() { AllowProjectionMismatch = true, ReprojectLayersOnAdding = true };
             //axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
             axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
             axMap1.KnownExtents = tkKnownExtents.keUSA;
@@ -37,7 +38,7 @@ namespace UsePanels
             //axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
             //axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
             //axMap1.SendMouseMove = true;
-            axMap1.SendMouseDown = true; 
+            axMap1.SendMouseDown = true;
             axMap1.ShapeIdentified += axMap1_ShapeIdentified;
             axMap1.ShapeHighlighted += AxMap1ShapeHighlighted;
 
@@ -50,19 +51,19 @@ namespace UsePanels
         }
         public void ShowAttributes()
         {
-            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;           
+            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
             Shapefile sf = new Shapefile();
             int handle = getLayerHandle();
             sf = axMap1.get_Shapefile(handle);
-            
-                //m_layerHandle = axMap1.AddLayer(sf,true);
-                //sf = axMap1.get_Shapefile(m_layerHandle);     // in case a copy of shapefile was created by GlobalSettings.ReprojectLayersOnAdding
 
-                axMap1.SendMouseMove = true;
-                axMap1.CursorMode = tkCursorMode.cmIdentify;
-                axMap1.ShapeHighlighted += AxMap1ShapeHighlighted;
-                m_label = toolStripStatusLabel1;
-                       
+            //m_layerHandle = axMap1.AddLayer(sf,true);
+            //sf = axMap1.get_Shapefile(m_layerHandle);     // in case a copy of shapefile was created by GlobalSettings.ReprojectLayersOnAdding
+
+            axMap1.SendMouseMove = true;
+            axMap1.CursorMode = tkCursorMode.cmIdentify;
+            axMap1.ShapeHighlighted += AxMap1ShapeHighlighted;
+            m_label = toolStripStatusLabel1;
+
         }
         private void AxMap1ShapeHighlighted(object sender, _DMapEvents_ShapeHighlightedEvent e)
         {
@@ -90,7 +91,7 @@ namespace UsePanels
             panel1.Hide();
         }
 
-        public void createAttributeTable(int[] lstSelected = null, string query="")
+        public void createAttributeTable(int[] lstSelected = null, string query = "")
         {
             Shapefile sf = new Shapefile();
             //shp.Open(@"C:\Work\GIS\data\states.shp");
@@ -128,7 +129,7 @@ namespace UsePanels
                 //MessageBox.Show(sf.get_Field(i).Name.ToString());
                 DataRow dr = null;
                 for (int j = 0; j < sf.NumShapes; j++)
-                {                   
+                {
                     //if j in lstSelected 
                     //MessageBox.Show(sf.get_CellValue(i, j).ToString());
                     dr = dt.NewRow();
@@ -137,11 +138,11 @@ namespace UsePanels
                     if (i == 0)
                     {
                         dr[s] = sf.get_CellValue(i, j);
-                       // if (lstSelected != null && lstSelected.Contains(j))
-                       // {
-                            dt.Rows.Add(dr);
+                        // if (lstSelected != null && lstSelected.Contains(j))
+                        // {
+                        dt.Rows.Add(dr);
                         //    dt.Select();                      
-                                            
+
                     }
                     else
                     {
@@ -160,21 +161,22 @@ namespace UsePanels
                 {
                     foreach (int i in lstSelected)
                     {
-                        for (int  j= 0; j < dataGridView1.RowCount-1; j++)
+                        for (int j = 0; j < dataGridView1.RowCount - 1; j++)
                         {
-                            if (j==i) dataGridView1.Rows[j].Selected = true;
+                            if (j == i) dataGridView1.Rows[j].Selected = true;
                             //dataGridView1.FirstDisplayedScrollingRowIndex = j;
                             //dataGridView1.CurrentCell = dataGridView1.Rows[j].Cells[0];
                             //dataGridView1.Focus();
                         }
                     }
-                }                             
+                }
             }
             /////////////////////////////////////////
             if (lstSelected != null && lstSelected.Length > 0)
             {
-                lblAttributeTitle.Text = layerName + ", with " + sf.NumShapes.ToString() + " rows with "+ lstSelected.Length+ " selected";
-            } else lblAttributeTitle.Text = layerName + ", with " + sf.NumShapes.ToString() + " rows";
+                lblAttributeTitle.Text = layerName + ", with " + sf.NumShapes.ToString() + " rows with " + lstSelected.Length + " selected";
+            }
+            else lblAttributeTitle.Text = layerName + ", with " + sf.NumShapes.ToString() + " rows";
             panel1.Show();
         }
         private void openAttributeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -205,7 +207,7 @@ namespace UsePanels
                 //MessageBox.Show(axMap1.Projection.ToString());
 
                 int layerHandle = -1;
-               
+
                 string fname = "";
 
                 if (filename.Length > 0 && filename.Contains(".shp"))
@@ -227,10 +229,10 @@ namespace UsePanels
                     if (n == 0) n += 1;
                     else n += 2;
                     Console.WriteLine("An element with Key = " + fname + " already exists, adding a duplicate layer");
-                    fname = fname + "("+n.ToString()+")";
+                    fname = fname + "(" + n.ToString() + ")";
                     //if (layerControl[fname]>-1) {
-                        layerControl.Add(fname, layerHandle+1000+n);
-                   // }
+                    layerControl.Add(fname, layerHandle + 1000 + n);
+                    // }
                 }
                 string workingDirectory = Environment.CurrentDirectory;
                 string projectDirectory = Directory.GetParent(workingDirectory).Parent.FullName;
@@ -247,9 +249,9 @@ namespace UsePanels
                 treeView1.ImageList = myImageList;
                 treeView1.CheckBoxes = true; //show checkbox of each node
 
-                foreach (TreeNode node  in treeView1.Nodes)
+                foreach (TreeNode node in treeView1.Nodes)
                 {
-                    node.Checked = true; 
+                    node.Checked = true;
                 }
 
                 //System.Drawing.Image.FromHbitmap()
@@ -283,9 +285,9 @@ namespace UsePanels
                     //N.Checked = true;
                     N.SelectedImageIndex = N.ImageIndex;
                     //ColorCodeShape(sf);
-                    Utils utils = new Utils();                  
+                    Utils utils = new Utils();
                     sf.DefaultDrawingOptions.LineWidth = 2;
-                     sf.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.Blue);
+                    sf.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.Blue);
                 }
                 else if (sf.ShapefileType == ShpfileType.SHP_POINT)
                 {
@@ -384,11 +386,12 @@ namespace UsePanels
                 // adds rectangle
                 object x, y;
                 int top = padding + i * (height + padding);
-                if(sf.ShapefileType==ShpfileType.SHP_POLYGON)
+                if (sf.ShapefileType == ShpfileType.SHP_POLYGON)
                 {
                     this.getRectange(padding, top, width, height, out x, out y);
                     axMap1.DrawPolygonEx(drawHandle, ref x, ref y, 4, sf.DefaultDrawingOptions.LineColor, true);
-                } else if (sf.ShapefileType == ShpfileType.SHP_POINT)
+                }
+                else if (sf.ShapefileType == ShpfileType.SHP_POINT)
                 {
                     //double x = 0.0;
                     //double y = 0.0;
@@ -397,10 +400,10 @@ namespace UsePanels
                 }
                 else if (sf.ShapefileType == ShpfileType.SHP_POLYLINE)
                 {
-                    axMap1.DrawLineEx(layerHandle, 0, 0, 0, 9,3,sf.DefaultDrawingOptions.LineColor);
+                    axMap1.DrawLineEx(layerHandle, 0, 0, 0, 9, 3, sf.DefaultDrawingOptions.LineColor);
                 }
-                    // adds text
-                    string text = axMap1.get_LayerName(layerHandle) + ".shp";
+                // adds text
+                string text = axMap1.get_LayerName(layerHandle) + ".shp";
                 var dlbls = axMap1.get_DrawingLabels(drawHandle);
                 if (dlbls != null)
                     dlbls.AddLabel(text, padding * 2 + width, top + padding);
@@ -437,7 +440,7 @@ namespace UsePanels
             //MessageBox.Show(Convert.ToUInt16(dataGridView1.SelectedRows[0].Cells[0].Value).ToString());
             // select a row, not a cell value in the attribute table, the above code is not good, since a cell 
             // calue can be anything that we cannot contorl. selectedrowindex is an int, no need to convert it.
-            int selectedrowindex = dataGridView1.SelectedCells[0].RowIndex;           
+            int selectedrowindex = dataGridView1.SelectedCells[0].RowIndex;
             sf.set_ShapeSelected(selectedrowindex, true);
             //sf.set_ShapeSelected(Convert.ToUInt16(selectedrowindex.ToString()),true);
             //sf.set_ShapeSelected(Convert.ToUInt16(dataGridView1.SelectedRows[0].Cells[0].Value.ToString()), true);
@@ -588,14 +591,15 @@ namespace UsePanels
         {
             //string filename = string.Empty;
             string[] fileNames = null;
-           
+
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 if (fileType.Contains("image"))
                 {
                     openFileDialog.Filter = "Image files (*.jpg, *.jpeg, *.bmp, *.gif, *.png,*.tif) | *.jpg; *.jpeg; *.bmp; *.gif; *.png; *.tif";
-                } else openFileDialog.Filter = fileType + " Files (*." + fileType + ")|*." + fileType;
-               
+                }
+                else openFileDialog.Filter = fileType + " Files (*." + fileType + ")|*." + fileType;
+
                 //MessageBox.Show(openFileDialog.Filter);
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
@@ -708,9 +712,9 @@ namespace UsePanels
             //axMap1.Refresh();
             axMap1.Redraw();
             //axMap1.ZoomToWorld();
-           // string nam = Path.GetFileNameWithoutExtension(sf.Filename);
-           // MessageBox.Show(nam);
-            
+            // string nam = Path.GetFileNameWithoutExtension(sf.Filename);
+            // MessageBox.Show(nam);
+
             //axMap1.ZoomToLayer(layerControl[nam]);
         }
 
@@ -718,7 +722,7 @@ namespace UsePanels
         {
             drag = true;
             mouseX = Cursor.Position.X - this.Left;
-            mouseY = Cursor.Position.Y - this.Top; 
+            mouseY = Cursor.Position.Y - this.Top;
         }
 
         private void panel1_MouseMove(object sender, MouseEventArgs e)
@@ -736,7 +740,7 @@ namespace UsePanels
             //panel1.MinimumSize=10;
         }
 
-        
+
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
@@ -766,13 +770,16 @@ namespace UsePanels
             //we use e.Index to get the layerHandle
             //if (layerControl.Count == 1)
             //{
-                //    //layerHandle = e.Node.Index;
-                layerHandle = layerControl[e.Node.Text];
-                // axMap1.set_LayerDynamicVisibility(layerHandle, false);
-                if (e.Node.Checked) {
-                    if (axMap1.get_LayerVisible(layerHandle)) { 
-                        axMap1.set_LayerVisible(layerHandle, true);
-                } else axMap1.set_LayerVisible(layerHandle, true);
+            //    //layerHandle = e.Node.Index;
+            layerHandle = layerControl[e.Node.Text];
+            // axMap1.set_LayerDynamicVisibility(layerHandle, false);
+            if (e.Node.Checked)
+            {
+                if (axMap1.get_LayerVisible(layerHandle))
+                {
+                    axMap1.set_LayerVisible(layerHandle, true);
+                }
+                else axMap1.set_LayerVisible(layerHandle, true);
             }
             else axMap1.set_LayerVisible(layerHandle, false);
             // } else {
@@ -816,15 +823,17 @@ namespace UsePanels
                 Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
             }
             string layerName = treeView1.SelectedNode.Text;
-            if(layerControl[layerName]!=-1) {
+            if (layerControl[layerName] != -1)
+            {
                 axMap1.RemoveLayer(layerControl[layerName]);
                 layerControl.Remove(layerName);
                 treeView1.SelectedNode.Remove();
                 panel1.Hide(); //hide the attribute table
-            } else
+            }
+            else
             {
                 MessageBox.Show(layerName + " is not found in map layer control; No layer removed.");
-                return; 
+                return;
             }
         }
 
@@ -871,7 +880,7 @@ namespace UsePanels
         private void AxMap1MouseDownEvent2(object sender, _DMapEvents_MouseDownEvent e)
         {
         }
-       
+
         void FormFormClosed(object sender, FormClosedEventArgs e)
         {
             int layerHandle = getLayerHandle();
@@ -891,7 +900,7 @@ namespace UsePanels
             var img = new MapWinGIS.Image();
 
             string[] filenames = openFile("image");
-           // OpenFileDialog dlg = new OpenFileDialog { Filter = img.CdlgFilter };
+            // OpenFileDialog dlg = new OpenFileDialog { Filter = img.CdlgFilter };
             if (filenames == null || filenames.Length == 0)
             {
                 //MessageBox.Show("Nothing selected");
@@ -902,8 +911,9 @@ namespace UsePanels
             {
                 MessageBox.Show(f);
                 if (f.ToLower().EndsWith(".tif") || f.ToLower().EndsWith(".jpg")
-                          ||  f.ToLower().EndsWith(".png")) { 
-                    
+                          || f.ToLower().EndsWith(".png"))
+                {
+
 
                     if (img.Open(f))//,ImageType.JPEG_FILE,false,null))
                     {
@@ -911,7 +921,7 @@ namespace UsePanels
                         if (layerHandle == -1)
                         {
                             Debug.Print(f + " cannot be added to map");
-                            return; 
+                            return;
                         }
                         string path = axMap1.get_LayerFilename(layerHandle);
 
@@ -936,7 +946,7 @@ namespace UsePanels
                 }
             }
         }
-        
+
         private void deleteFiles(string fullFileName)
         {
             string path = Path.GetDirectoryName(fullFileName);
@@ -961,7 +971,7 @@ namespace UsePanels
             sfd.ShowDialog();
             //sfd.CheckFileExists = true;
             //sfd.CheckPathExists = true;
-            
+
             string f = "";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
@@ -996,13 +1006,13 @@ namespace UsePanels
                 sfd.FilterIndex = 1;
                 sfd.RestoreDirectory = true;
                 //sfd.InitialDirectory = @"D:\shp";
-                sfd.FileName = treeView1.SelectedNode.Text; 
-                    
+                sfd.FileName = treeView1.SelectedNode.Text;
+
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     //Get the path of specified file
                     filename = sfd.FileName;
-                   // fileNames = sfd.FileNames;
+                    // fileNames = sfd.FileNames;
                 }
                 else
                 {
@@ -1025,10 +1035,10 @@ namespace UsePanels
             {
                 readARD ra = new readARD(file);
 
-                ArdToShapefile(file, ra,filenames.Length==1);
-            }          
+                ArdToShapefile(file, ra, filenames.Length == 1);
+            }
         }
-        public void ArdToShapefile(string file, readARD ra,bool oneFile)
+        public void ArdToShapefile(string file, readARD ra, bool oneFile)
         {
 
             int m = 0;
@@ -1058,7 +1068,7 @@ namespace UsePanels
 
             //double iri = ra.IRI;
             AmesData data = ra.data;
-            
+
             //GPSPoint[] points = ra.points; //doesn't work
             //GPSPoint[] points = ra.getPoints(path);
             //if (points != null) {
@@ -1089,19 +1099,19 @@ namespace UsePanels
                 double y = g0.LatiudeDecimalDegrees;
                 Console.WriteLine(x.ToString() + "," + y.ToString());
 
-                double IRI_left = 0; 
+                double IRI_left = 0;
                 if (data.ProfileLeft != null)
                 {
                     IRI_left = data.ProfileLeft.IntervalIRI(n * d, (n + 1) * d);
-                }               
-               
+                }
+
                 double IRI_right = 0;// 
                 if (data.ProfileRight != null)
                 {
                     IRI_right = data.ProfileRight.IntervalIRI(n * d, (n + 1) * d);
                 }
                 double z = g0.Elevation;
-                
+
                 GPSPoint g1 = data.GPS.DistanceToGpsPoint((n + 1) * d);
                 double x1 = g1.LongitudeDecimalDegrees;
                 double y1 = g1.LatiudeDecimalDegrees;
@@ -1180,15 +1190,16 @@ namespace UsePanels
             Cursor.Current = Cursors.Default;
             string shpFolder = "";
 
-            if (sf != null) {
+            if (sf != null)
+            {
                 m += 1;
                 string fname = Path.GetFileName(file).Replace(".ard", ".shp");
                 //string f = @"C:\work\GIS\data" + fname;
                 string f = "";
-               
+
 
                 if (oneFile)
-                { 
+                {
                     SaveFileDialog sfdialog = new SaveFileDialog();
                     sfdialog.Filter = "Shape File|*.shp";
                     sfdialog.FileName = fname;
@@ -1196,21 +1207,21 @@ namespace UsePanels
 
                     if (sfdialog.ShowDialog() == DialogResult.OK)
                     {
-                        f = sfdialog.FileName;                   
+                        f = sfdialog.FileName;
                     }
-           
+
                     //File.Delete(f);
                     //deleteFiles(f);
                     // MessageBox.Show(f);
-                    
+
                     sf.SaveAs(f, null);
-                        //frm.Hide();
-                        // MessageBox.Show("Shapefile creatd and saved to " + f);
+                    //frm.Hide();
+                    // MessageBox.Show("Shapefile creatd and saved to " + f);
                     AddLayerToMap(f);
-                    return; 
+                    return;
                 }
                 else //batch 
-                {                    
+                {
                     string DirName = Path.GetDirectoryName(file);
                     shpFolder = DirName + "\\ConvertedShape";
                     System.IO.Directory.CreateDirectory(shpFolder);
@@ -1225,25 +1236,25 @@ namespace UsePanels
                     //    }
                     //    return; 
                     //}
-                    
+
                     //MessageBox.Show(f);
                     sf.SaveAs(f, null);
-                        //frm.Hide();
+                    //frm.Hide();
                     // MessageBox.Show("Shapefile creatd and saved to " + f);
-                     AddLayerToMap(f);
+                    AddLayerToMap(f);
                 }
-               // MessageBox.Show(string.Format("{0}.ard converted and saved to {1}", fname, shpFolder));
+                // MessageBox.Show(string.Format("{0}.ard converted and saved to {1}", fname, shpFolder));
             }
             else
             {
                 MessageBox.Show("No shapefile created!");
-                return; 
+                return;
             }
-          
+
         }
 
         private void ConvertShapeFileToKML(string KMLFileName, Shapefile sf)
-        {          
+        {
             //open the kml output file 
             var KMLFile = OpenKMLFile(KMLFileName);
 
@@ -1278,13 +1289,15 @@ namespace UsePanels
             //MessageBox.Show("KML " + KMLFileName + " created!");
 
             //open the kml in google earth
-            if (File.Exists(@"C:\Program Files\Google\Google Earth Pro\client\googleearth.exe")) {
-            // System.Diagnostics.Process.Start(,KMLFileName);
+            if (File.Exists(@"C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"))
+            {
+                // System.Diagnostics.Process.Start(,KMLFileName);
                 System.Diagnostics.Process.Start(@KMLFileName);
-            } else
+            }
+            else
             {
                 MessageBox.Show("Google Earth is not found on this machine");
-                return; 
+                return;
             }
         }
         //////////////////////////////////////////////////////////
@@ -1448,7 +1461,7 @@ namespace UsePanels
 
             //string fname = "World_Imagery";
             axMap1.Redraw3(tkRedrawType.RedrawSkipAllLayers, true);
-            
+
         }
 
         public void removeArcGISService()
@@ -1467,7 +1480,7 @@ namespace UsePanels
             axMap1.Tiles.ProviderId = ID;
 
             //string fname = "World_Imagery";
-            axMap1.Redraw3(tkRedrawType.RedrawSkipAllLayers, true);           
+            axMap1.Redraw3(tkRedrawType.RedrawSkipAllLayers, true);
         }
 
         private void chkBox_addBaseMap_CheckedChanged(object sender, EventArgs e)
@@ -1491,13 +1504,13 @@ namespace UsePanels
 
             if (null == fm)
             {
-               // fm = new frmSelectByAttributes(sf);
+                // fm = new frmSelectByAttributes(sf);
                 fm = new frmSelectByAttributes();
                 fm.cmbLayer.Items.Clear();
                 foreach (TreeNode N in treeView1.Nodes)
                 {
                     fm.cmbLayer.Items.Add(N.Text);
-                }  
+                }
                 fm.Show();
                 fm.BringToFront();
             }
@@ -1510,7 +1523,7 @@ namespace UsePanels
         private void axMap1_ShapeIdentified(object sender, _DMapEvents_ShapeIdentifiedEvent e)
         {
             int layerHandle = getLayerHandle();
-            
+
             Shapefile sf = axMap1.get_Shapefile(layerHandle);
             sf.Identifiable = true;
             //MessageBox.Show(layerControl[layerHandle])
@@ -1522,7 +1535,7 @@ namespace UsePanels
                 projX = e.pointX;
                 projY = e.pointY;
                 object result = null;
-                Extents ext = new Extents(); 
+                Extents ext = new Extents();
                 ext.SetBounds(projX, projY, 0.0, projX, projY, 0.0);
                 if (sf.SelectShapes(ext, 0.0, SelectMode.INTERSECTION, ref result))
                 {
@@ -1580,7 +1593,7 @@ namespace UsePanels
                         // else form.Show();
                     }
                 }
-                else MessageBox.Show("Nothing Selected");               
+                else MessageBox.Show("Nothing Selected");
             }
         }
 
@@ -1600,6 +1613,21 @@ namespace UsePanels
 
         private void toolStripButton6_Click(object sender, EventArgs e)
         {
+            //int[] handles = new int[axMap1.NumLayers];
+            //string[] names = new string[axMap1.NumLayers];
+
+            //MessageBox.Show(handles.Length.ToString());
+            //for (int i = 0; i < axMap1.NumLayers; i++)
+            //{
+            //    int layerHandle = axMap1.get_LayerHandle(i);
+            //    handles[i] = layerHandle;
+            //    names[i] = axMap1.get_LayerName(layerHandle);
+            //}
+            //foreach (var item in names)
+            //{
+            //    MessageBox.Show(item);
+            //}
+
             clearSelections();
         }
         private void clearSelections()
@@ -1664,7 +1692,7 @@ namespace UsePanels
                             }
                             outputCsv[0] += columnNames;
 
-                            for (int i = 0; i < dataGridView1.Rows.Count-1; i++)
+                            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                             {
                                 for (int j = 0; j < columnCount; j++)
                                 {
@@ -1711,9 +1739,9 @@ namespace UsePanels
             using (StreamWriter w = File.AppendText(logFile)) //create one if not exist, else append to the existing one
             {
                 try
-                {               
+                {
                     w.WriteLine(filenames.Length + " shape files to be converted:");
-                
+
                     foreach (string f in filenames)
                     {
                         Shapefile sf = new Shapefile();
@@ -1722,13 +1750,13 @@ namespace UsePanels
                             sf.Open(f);
                             ConvertShapeFileToKML(f.Replace(".shp", ".kml"), sf);
                             w.WriteLine(f + " converted to kml.");
-                            counter += 1; 
+                            counter += 1;
                         }
                         else
                         {
-                           MessageBox.Show(f + " is not a shapefile, will not convert.");
+                            MessageBox.Show(f + " is not a shapefile, will not convert.");
                             w.WriteLine(f + " cannot be converted to kml.");
-                        }                       
+                        }
                     }
                     w.WriteLine(counter + " shapefiles converted to kml.");
                 }
@@ -1736,7 +1764,7 @@ namespace UsePanels
                 {
                     w.WriteLine(EX.ToString());
                 }
-            }           
+            }
         }
 
         private void shapefileToKMLToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1749,7 +1777,7 @@ namespace UsePanels
             int layerHandle = getLayerHandle();
             Shapefile sf = axMap1.get_Shapefile(layerHandle);
             string kmlfileName = saveFile("kml");
-              ConvertShapeFileToKML(kmlfileName,sf);
+            ConvertShapeFileToKML(kmlfileName, sf);
         }
 
         public void CreateBuffer(ToolStripStatusLabel label)
@@ -1843,7 +1871,7 @@ namespace UsePanels
 
         private void bufferToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CreateBuffer(toolStripStatusLabel1);
+            createBuffer();
         }
 
         private void labelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1873,7 +1901,7 @@ namespace UsePanels
             }
 
             UpdateFieldsList();
-           
+
         }
 
         private void UpdateFieldsList()
@@ -1954,7 +1982,7 @@ namespace UsePanels
             {
                 lstBShapeFields.Hide();
                 this.Text = "Show Label Box";
-                
+
             }
             else
             {
@@ -1970,7 +1998,7 @@ namespace UsePanels
             Shapefile sf = axMap1.get_Shapefile(layerHandle);
 
             TreeNode nd = treeView1.SelectedNode;
-            int id=nd.SelectedImageIndex;
+            int id = nd.SelectedImageIndex;
 
             Bitmap image1 = (Bitmap)treeView1.ImageList.Images[id];
             int x, y;
@@ -2042,7 +2070,7 @@ namespace UsePanels
                                         //fm.BringToFront();
                                         //axMap1.SendToBack();
                                         // managerForm.CreateShape += ManagerForm_CreateShape;
-            //fm.ColorCodeShape += ColorCodeShape;  //add to delegate 
+                                        //fm.ColorCodeShape += ColorCodeShape;  //add to delegate 
             fm.Show();
         }
 
@@ -2069,7 +2097,7 @@ namespace UsePanels
         {
             TreeNode node = treeView1.GetNodeAt(e.X, e.Y);
             if (node != null) treeView1.SelectedNode = node;
-            
+
         }
         private void pictureBox_Paint(object sender, PaintEventArgs e)
         {
@@ -2142,7 +2170,7 @@ namespace UsePanels
                     Application.DoEvents();
                 }
 
-               
+
                 // generating charts
                 ChartField chartField = new ChartField();
                 chartField.Name = "Length";
@@ -2162,7 +2190,7 @@ namespace UsePanels
                 {
                     AddLayerToMap(newShape);
                 }
-                else  MessageBox.Show(newShape + " is not saved.");
+                else MessageBox.Show(newShape + " is not saved.");
 
                 //axMap1.AddLayer(sfStates, true);
                 //axMap1.AddLayer(sfRivers, true);
@@ -2218,77 +2246,272 @@ namespace UsePanels
             sf.Labels.Synchronized = true;
             axMap1.Redraw();
         }
-    }
 
-
-    class Callback : ICallback
-    {
-        private ToolStripStatusLabel m_label = null;
-        public Callback(ToolStripStatusLabel label)
+        private void bufferToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            m_label = label;
-            if (label == null)
-                throw new NullReferenceException("No reference to the label was provided");
         }
-
-        public void Error(string KeyOfSender, string ErrorMsg)
+        private void createBuffer()
         {
-            Debug.Print("Error reported: " + ErrorMsg);
-        }
-        public void Progress(string KeyOfSender, int Percent, string Message)
-        {
-            m_label.Text = Message + ": " + Percent + "%";
-            Application.DoEvents();
-        }
-    }
-    public class readARD
-    {
-        public AmesData data;
-        public GPSPoint[] points;
-        // public double IRI;
-        public readARD(string path)
-        {
-            AmesData data = FileFormats.AmesRunData.File.RunFile.Read(path);
-            //this.points = data.GPS.AllValues();
-            //this.IRI = data.ProfileLeft.IntervalIRI(0, 258);
+            ToolStripStatusLabel label = new ToolStripStatusLabel();
+            var callback = new Callback(label);
+            double distance = 0.00;
+            string bufferDistance = Interaction.InputBox("Enter a distance as ft (feet), mi (mile) or me (meter):", "Buffer Distance", "500 ft", 200, 300);
 
-            //GPSPoint g0 = data.GPS.DistanceToGpsPoint(258);
-            //double x = g0.LatiudeDecimalDegrees;
-            this.data = data;
-
-        }
-
-        //public AmesData getData()
-        //{
-        //    if (data == null) {
-        //        MessageBox.Show("data is empty");
-        //    }
-
-        //    return data; 
-        //}
-
-
-        public GPSPoint[] getPoints(string path)
-        {
-
-            //string path = @"\\Samba2\Shared-Big-SSD\AE Profiler Data Files\Napier Rd\Aetest1.ard";
-            //path = @"\\Samba2\Shared-Big-SSD\AE Profiler Data Files\March 2015\Testing 03132015\GPS_DMI_Napier_WithFix4.ard";
-            AmesData data = FileFormats.AmesRunData.File.RunFile.Read(path); //, !Active.Settings.DoNotApplyReverseFilter, _viewerConfig.ViewerPrePostSettings, Active.Settings.Analysis_LowSpeedCutoffMph, Active.Settings.AddGpsDropoutEvents);
-            GPSPoint[] points = data.GPS.AllValues();
-
-            //Profile[] Profiles = data.ProfileCenter;
-            //double IRI = data.ProfileRight.IRI;
-
-            this.points = points;
-
-            //List<GPSPoint> points = data.GPS.AllValues();
-            if (points.Length <= 0)
+            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
+            if (bufferDistance != "")
             {
-                MessageBox.Show("File is empty");
+                MessageBox.Show(bufferDistance);
             }
-            return points;
+
+            if (bufferDistance.Split(' ')[1] == "ft")
+            {
+                distance = Convert.ToDouble(bufferDistance.Split(' ')[0]) / 3.33;
+            }
+            else if (bufferDistance.Split(' ')[1] == "mi")
+            {
+                distance = Convert.ToDouble(bufferDistance.Split(' ')[0]) * 1609;
+            }
+            else distance = Convert.ToDouble(bufferDistance.Split(' ')[0]);
+
+            var sf = new Shapefile();
+            int layerHandle = getLayerHandle();
+            sf = axMap1.get_Shapefile(layerHandle);
+
+            MessageBox.Show(DateAndTime.TimeString);
+
+            var utils = new Utils();
+            sf.DefaultDrawingOptions.LineWidth = 3.0f;
+            sf.DefaultDrawingOptions.LineColor = utils.ColorByName(tkMapColor.Blue);
+            var buffers = new List<Shapefile>();
+            for (int i = 1; i < 5; i++)
+            {
+                Shapefile sfBuffer = sf.BufferByDistance(distance * i, 30, false, true);
+                if (sfBuffer == null)
+                {
+                    MessageBox.Show("Failed to calculate the buffer: " + sf.ErrorMsg[sf.LastErrorCode]);
+                    return;
+                }
+                else
+                {
+                    sfBuffer.GlobalCallback = callback;
+                    buffers.Add(sfBuffer);
+                }
+            }
+            // now subtract smaller buffers from larger ones
+            for (int i = buffers.Count - 1; i > 0; i--)
+            {
+                Shapefile sfDiff = buffers[i].Difference(false, buffers[i - 1], false);
+                if (sfDiff == null)
+                {
+                    MessageBox.Show("Failed to calculate the difference: " + sf.ErrorMsg[sf.LastErrorCode]);
+                    return;
+                }
+                else
+                {
+                    buffers[i] = sfDiff;
+                }
+            }
+            // pass all the resulting shapes to a single shapefile and mark their distance
+            Shapefile sfResult = buffers[0].Clone();
+            sfResult.GlobalCallback = callback;
+            int fieldIndex = sfResult.EditAddField("Distance", FieldType.DOUBLE_FIELD, 10, 12);
+
+            for (int i = 0; i < buffers.Count; i++)
+            {
+                Shapefile sfBuffer = buffers[i];
+                for (int j = 0; j < sfBuffer.NumShapes; j++)
+                {
+                    int index = sfResult.NumShapes;
+                    sfResult.EditInsertShape(sfBuffer.Shape[j].Clone(), ref index);
+                    sfResult.EditCellValue(fieldIndex, index, distance * (i + 1));
+                }
+            }
+
+            // create visualization categories
+            sfResult.DefaultDrawingOptions.FillType = tkFillType.ftStandard;
+            sfResult.Categories.Generate(fieldIndex, tkClassificationType.ctUniqueValues, 0);
+            sfResult.Categories.ApplyExpressions();
+            // apply color scheme
+            var scheme = new ColorScheme();
+            scheme.SetColors2(tkMapColor.LightBlue, tkMapColor.LightYellow);
+            sfResult.Categories.ApplyColorScheme(tkColorSchemeType.ctSchemeGraduated, scheme);
+            layerHandle = axMap1.AddLayer(sfResult, true);
+            axMap1.Redraw();
+            string f = @"c:\work\gis\data\buffer_" + bufferDistance + "_" + DateAndTime.TimeString.Replace(":", "_") + ".shp";
+            sfResult.SaveAs(f, null);
+            axMap1.AddLayerFromFilename(f, tkFileOpenStrategy.fosAutoDetect, true);
+
+        }
+
+        private void toolSelectShape_Click(object sender, EventArgs e)
+        {
+            axMap1.SendMouseDown = true;
+
+            axMap1.CursorMode = tkCursorMode.cmNone;
+            axMap1.MouseDownEvent += AxMap1MouseDownEvent3;  // change MapEvents to axMap1
+
+        }
+        private void AxMap1MouseDownEvent3(object sender, _DMapEvents_MouseDownEvent e)
+        {
+            int layerHandle = axMap1.get_LayerHandle(0);  // it's assumed here that the layer we want to edit is the first 1 (with 0 index)
+            Shapefile sf = axMap1.get_Shapefile(layerHandle);
+
+            if (sf != null)
+            {
+                double projX = 0.0;
+                double projY = 0.0;
+                axMap1.PixelToProj(e.x, e.y, ref projX, ref projY);
+
+                object result = null;
+                Extents ext = new Extents();
+                ext.SetBounds(projX, projY, 0.1, projX, projY, 0.1);
+                if (sf.SelectShapes(ext, 0.0, SelectMode.INCLUSION, ref result))
+                {
+                    int[] shapes = result as int[];
+                    if (shapes == null) return;
+                    if (shapes.Length > 1)
+                    {
+                        string s = "More than one shapes were selected. Shape indices:";
+                        for (int i = 0; i < shapes.Length; i++)
+                            s += shapes[i] + Environment.NewLine;
+                        MessageBox.Show(s);
+                    }
+                    else
+                    {
+                        sf.set_ShapeSelected(shapes[0], true);  // selecting the shape we are about to edit
+                        axMap1.Redraw();
+                        Application.DoEvents();
+
+                    }
+                }
+            }
+        }
+
+
+        class Callback : ICallback
+        {
+            private ToolStripStatusLabel m_label = null;
+            public Callback(ToolStripStatusLabel label)
+            {
+                m_label = label;
+                if (label == null)
+                    throw new NullReferenceException("No reference to the label was provided");
+            }
+
+            public void Error(string KeyOfSender, string ErrorMsg)
+            {
+                Debug.Print("Error reported: " + ErrorMsg);
+            }
+            public void Progress(string KeyOfSender, int Percent, string Message)
+            {
+                m_label.Text = Message + ": " + Percent + "%";
+                Application.DoEvents();
+            }
+        }
+        public class readARD
+        {
+            public AmesData data;
+            public GPSPoint[] points;
+            // public double IRI;
+            public readARD(string path)
+            {
+                AmesData data = FileFormats.AmesRunData.File.RunFile.Read(path);
+                //this.points = data.GPS.AllValues();
+                //this.IRI = data.ProfileLeft.IntervalIRI(0, 258);
+
+                //GPSPoint g0 = data.GPS.DistanceToGpsPoint(258);
+                //double x = g0.LatiudeDecimalDegrees;
+                this.data = data;
+
+            }
+
+            //public AmesData getData()
+            //{
+            //    if (data == null) {
+            //        MessageBox.Show("data is empty");
+            //    }
+
+            //    return data; 
+            //}
+
+
+            public GPSPoint[] getPoints(string path)
+            {
+
+                //string path = @"\\Samba2\Shared-Big-SSD\AE Profiler Data Files\Napier Rd\Aetest1.ard";
+                //path = @"\\Samba2\Shared-Big-SSD\AE Profiler Data Files\March 2015\Testing 03132015\GPS_DMI_Napier_WithFix4.ard";
+                AmesData data = FileFormats.AmesRunData.File.RunFile.Read(path); //, !Active.Settings.DoNotApplyReverseFilter, _viewerConfig.ViewerPrePostSettings, Active.Settings.Analysis_LowSpeedCutoffMph, Active.Settings.AddGpsDropoutEvents);
+                GPSPoint[] points = data.GPS.AllValues();
+
+                //Profile[] Profiles = data.ProfileCenter;
+                //double IRI = data.ProfileRight.IRI;
+
+                this.points = points;
+
+                //List<GPSPoint> points = data.GPS.AllValues();
+                if (points.Length <= 0)
+                {
+                    MessageBox.Show("File is empty");
+                }
+                return points;
+            }
+        }
+
+
+        private void upToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //int handle = getLayerHandle();
+            //int position = axMap1.get_LayerPosition(handle);
+            //axMap1.MoveLayerUp(position - 1);
+            MoveItem(-1);
+            //treeView1.SelectedNode = null;
+            //treeView1.SelectedNode = treeView1.Nodes[0];
+        }
+
+        private void downToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //int handle = getLayerHandle();
+            //int position = axMap1.get_LayerPosition(handle);
+            //axMap1.MoveLayerDown(position);
+            MoveItem(1);
+        }
+
+        private void toTopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //int handle = getLayerHandle();
+            //int position = axMap1.get_LayerPosition(handle);
+            //axMap1.MoveLayerTop(position);
+            int currentPosition = treeView1.SelectedNode.Index;
+            MoveItem(-currentPosition);
+            treeView1.SelectedNode = null;
+            //treeView1.SelectedNode = treeView1.Nodes[0];
+        }
+
+        private void toBottomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           
+            //axMap1.MoveLayerBottom(position);
+            int currentPosition = treeView1.SelectedNode.Index;
+            MoveItem(axMap1.NumLayers-currentPosition-1);
+            treeView1.SelectedNode = null; //unselect all nodes, 
+            //treeView1.SelectedNode = treeView1.Nodes[axMap1.NumLayers-1]; //select the one at the bottom (just moved to)
+        }
+
+        public void MoveItem(int direction)
+        {
+            if (treeView1.SelectedNode == null || axMap1.NumLayers == 0) return;
+
+            int newPosition = treeView1.SelectedNode.Index + direction;
+
+            if (newPosition < 0 || newPosition >= axMap1.NumLayers) return;
+
+
+            TreeNode N = treeView1.SelectedNode;
+            treeView1.SelectedNode.Remove();
+           treeView1.Nodes.Insert(newPosition,N);
+            //treeView1.SelectedNode = null;
+            treeView1.HideSelection = true;
+
         }
     }
-
-
 }
