@@ -2513,5 +2513,33 @@ namespace UsePanels
             treeView1.HideSelection = true;
 
         }
+
+        private void symbologyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int handle = getLayerHandle();
+
+            Shapefile sf = new Shapefile();
+            sf = axMap1.get_Shapefile(handle);
+
+            Color c = new Color(); 
+            if (colorDialog1.ShowDialog() != DialogResult.Cancel)
+            {
+                c = colorDialog1.Color;
+                //UInt32 color = (uint)(((c.A << 24) | (c.R << 16) | (c.G << 8) | c.B) & 0xffffffffL);            
+            }
+
+            if (sf.ShapefileType == ShpfileType.SHP_POLYLINE)
+            {
+                axMap1.set_ShapeLayerLineColor(handle, (UInt32)(System.Drawing.ColorTranslator.ToOle(c)));
+                int lineWidth = Int32.Parse(Interaction.InputBox("Enter a line size between 1 and 10:", "Give a line size", "3", 200, 300));
+                axMap1.set_ShapeLayerLineWidth(handle, lineWidth);
+            }
+            else if (sf.ShapefileType == ShpfileType.SHP_POLYGON)
+            {
+                axMap1.set_ShapeLayerFillColor(handle,(UInt32)(System.Drawing.ColorTranslator.ToOle(c)));
+            }
+
+
+        }
     }
 }

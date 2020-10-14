@@ -87,6 +87,8 @@
             this.downToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.symbologyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -450,9 +452,10 @@
             this.bufferToolStripMenuItem,
             this.labelToolStripMenuItem,
             this.changeLineSymbolToolStripMenuItem,
-            this.moveLayerToolStripMenuItem});
+            this.moveLayerToolStripMenuItem,
+            this.symbologyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(184, 224);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(184, 246);
             // 
             // zoomToLayerToolStripMenuItem
             // 
@@ -611,6 +614,13 @@
             this.toBottomToolStripMenuItem.Text = "To Bottom";
             this.toBottomToolStripMenuItem.Click += new System.EventHandler(this.toBottomToolStripMenuItem_Click);
             // 
+            // symbologyToolStripMenuItem
+            // 
+            this.symbologyToolStripMenuItem.Name = "symbologyToolStripMenuItem";
+            this.symbologyToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.symbologyToolStripMenuItem.Text = "Symbology";
+            this.symbologyToolStripMenuItem.Click += new System.EventHandler(this.symbologyToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -705,6 +715,8 @@
         private System.Windows.Forms.ToolStripMenuItem downToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toTopToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toBottomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem symbologyToolStripMenuItem;
+        private System.Windows.Forms.ColorDialog colorDialog1;
     }
 }
 
