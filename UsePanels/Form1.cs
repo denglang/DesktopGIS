@@ -142,7 +142,6 @@ namespace UsePanels
                         // {
                         dt.Rows.Add(dr);
                         //    dt.Select();                      
-
                     }
                     else
                     {
@@ -467,8 +466,10 @@ namespace UsePanels
         private void zoomToLayerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int layerHandle = getLayerHandle();
-            axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
+            //axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
             axMap1.ZoomToLayer(layerHandle);
+            createAttributeTable();
+
         }
 
         public bool AddLayers(AxMap axMap1, string dataPath)
@@ -2517,7 +2518,7 @@ namespace UsePanels
         private void symbologyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int handle = getLayerHandle();
-
+            SetBasicSymbology(handle);
             Shapefile sf = new Shapefile();
             sf = axMap1.get_Shapefile(handle);
 
@@ -2530,16 +2531,110 @@ namespace UsePanels
 
             if (sf.ShapefileType == ShpfileType.SHP_POLYLINE)
             {
-                axMap1.set_ShapeLayerLineColor(handle, (UInt32)(System.Drawing.ColorTranslator.ToOle(c)));
-                int lineWidth = Int32.Parse(Interaction.InputBox("Enter a line size between 1 and 10:", "Give a line size", "3", 200, 300));
+                axMap1.set_ShapeLayerLineColor(handle, (UInt32)System.Drawing.ColorTranslator.ToOle(c));
+                float lineWidth = axMap1.get_ShapeLayerLineWidth(handle);
+                lineWidth = Int32.Parse(Interaction.InputBox("Enter a line size between 1 and 10:", "Give a line size", lineWidth.ToString(), 200, 300));
                 axMap1.set_ShapeLayerLineWidth(handle, lineWidth);
             }
             else if (sf.ShapefileType == ShpfileType.SHP_POLYGON)
             {
-                axMap1.set_ShapeLayerFillColor(handle,(UInt32)(System.Drawing.ColorTranslator.ToOle(c)));
+                //SetBasicSymbology(handle);
+                axMap1.set_ShapeLayerFillColor(handle, (UInt32)System.Drawing.ColorTranslator.ToOle(c));
+                float lineWidth = Int32.Parse(Interaction.InputBox("Enter a line size between 5 and 40:", "Give a line size", "3", 200, 300));
+                float transparencyRate = float.Parse(Interaction.InputBox("Enter a value between 0 and 1:", "Set transparency percentage", "0.5", 100, 150));
+                axMap1.set_ShapeLayerFillTransparency(handle, transparencyRate);
+                axMap1.set_ShapeLayerLineWidth(handle, lineWidth);
             }
 
+            else if (sf.ShapefileType == ShpfileType.SHP_POINT)
+            {
+                axMap1.set_ShapeLayerPointColor(handle, (UInt32)System.Drawing.ColorTranslator.ToOle(c));
+                float pointSize = axMap1.get_ShapeLayerPointSize(handle);
+                pointSize = Int32.Parse(Interaction.InputBox("Enter a line size between 5 and 40:", "Give a line size", pointSize.ToString(), 200, 300));
+                axMap1.set_ShapeLayerPointSize(handle, pointSize);
+            }
+        }
+        public void SetBasicSymbology(int intHandler)
+        {
+          
+            //Set Filling color of the polygon shapefile
+            axMap1.set_ShapeLayerFillColor(intHandler,
+            (UInt32)(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Honeydew)));
+            //Set the outline color of the polygon features
+            axMap1.set_ShapeLayerLineColor(intHandler,
+            (UInt32)(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Goldenrod)));
+        }
 
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+            //foreach (DataGridViewColumn column in dataGridView1.Columns)
+            //{
+
+            //    MessageBox.Show(column.HeaderText);
+
+            //    //String.Concat("Column ",column.Index.ToString());
+            //}
+
+        }
+
+        private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            int intHandler = getLayerHandle();
+            Shapefile sf = new Shapefile();
+            sf = axMap1.get_Shapefile(intHandler);
+            //DataGridViewColumn c = dataGridView1.Columns(e.ColumnIndex);
+            string columnName = dataGridView1.Columns[e.ColumnIndex].HeaderText;
+            string columnType = dataGridView1.Columns[e.ColumnIndex].ValueType.ToString();
+            int myFieldIndex = e.ColumnIndex;
+            //MessageBox.Show(columnName + "," + columnType);
+            //MapWinGIS.Table myTable = new MapWinGIS.Table();
+            //myTable.Open(@"D:\GISSampleData2\arabcntry.dbf", null);
+            //Table myTable = (Table)dataGridView1;
+            //int numberOfRows = myTable.NumRows; //dataGridView1.RowCount;
+
+            ////Create an array to store the cell values of the field
+            //double[] myCellsValues = new double[numberOfRows];
+            ////Populate the array with cell values restored from the Table instance
+            //for (int i = 0; i < numberOfRows - 1; i++)
+            //{
+            //    myCellsValues[i] = Convert.ToDouble(myTable.get_CellValue(1, i));
+            //}
+            ////Get the minimum and maximum values
+            //double minValue = myCellsValues.Min();
+            //double maxValue = myCellsValues.Max();
+
+            sf.DefaultDrawingOptions.FillType = tkFillType.ftStandard;
+            sf.Categories.Generate(myFieldIndex, tkClassificationType.ctUniqueValues, 0);
+            sf.Categories.ApplyExpressions();
+
+            ColorScheme scheme = new ColorScheme();
+            scheme.SetColors2(tkMapColor.Blue, tkMapColor.Red);
+
+            sf.Categories.ApplyColorScheme(tkColorSchemeType.ctSchemeGraduated, scheme);
+            axMap1.Redraw();
+            //ShapefileCategories myScheme = new ShapefileCategories();
+            //myScheme.Shapefile = axMap1.get_Shapefile(intHandler);
+            //myScheme.AddRange(myFieldIndex, tkClassificationType.ctNaturalBreaks, 5, minValue, maxValue);
+            //Set the field index to use in symbology
+
+            ////Create a new instance for MapWinGIS.ShapefileColorBreak 
+            //MapWinGIS.ShapefileColorBreak myBreak = new MapWinGIS.ShapefileColorBreak();
+            ////Set the minimum value in the field as a start value
+            //myBreak.StartValue = minValue;
+            ////Set the start color of the scheme
+            //myBreak.StartColor =
+            //    (UInt32)(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Aqua));
+            ////Set the maximum value in the field as an end value
+            //myBreak.EndValue = maxValue;
+            ////Set the end color of the scheme
+            //myBreak.EndColor =
+            //    (UInt32)(System.Drawing.ColorTranslator.ToOle
+            //    (System.Drawing.Color.DarkBlue));
+            ////Add the break to the color scheme
+            //myScheme.Add(myBreak);
+            ////Upgrade display using the scheme
+            //axMap1.ApplyLegendColors(myScheme);
         }
     }
 }
