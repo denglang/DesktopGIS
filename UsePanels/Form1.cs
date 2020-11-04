@@ -911,11 +911,8 @@ namespace UsePanels
             foreach (string f in filenames)
             {
                 MessageBox.Show(f);
-                if (f.ToLower().EndsWith(".tif") || f.ToLower().EndsWith(".jpg")
-                          || f.ToLower().EndsWith(".png"))
+                if (f.ToLower().EndsWith(".tif") || f.ToLower().EndsWith(".jpg") || f.ToLower().EndsWith(".png"))
                 {
-
-
                     if (img.Open(f))//,ImageType.JPEG_FILE,false,null))
                     {
                         layerHandle = axMap1.AddLayer(img, true);
@@ -2635,6 +2632,43 @@ namespace UsePanels
             //myScheme.Add(myBreak);
             ////Upgrade display using the scheme
             //axMap1.ApplyLegendColors(myScheme);
+        }
+
+        private void selectByDistanceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void selectByLocationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmSelectByLocation fm = Application
+              .OpenForms
+              .OfType<frmSelectByLocation>()
+              .LastOrDefault();
+
+            if (null == fm)
+            {
+                // fm = new frmSelectByAttributes(sf);
+                fm = new frmSelectByLocation();
+                fm.chkLstBox.Items.Clear();
+                fm.cmbSourceLayer.Items.Clear();
+                //fm.cmbSourceLayer.Items.Insert(0, "Please select a layer below");
+                foreach (TreeNode N in treeView1.Nodes)
+                {                   
+                    fm.chkLstBox.Items.Add(N.Text);
+                    fm.cmbSourceLayer.Items.Add(N.Text);
+                }
+                fm.cmbSourceLayer.SelectedIndex = 0;
+                fm.cmbSourceLayer.SelectedIndex = 0;
+                fm.cmbSpatialMethod.SelectedIndex = 0;
+                fm.cmbMethod.SelectedIndex = 0;
+                fm.Show();
+                fm.BringToFront();
+            }
+            else
+            { // ...Yes. We have to activate it (i.e. bring to front, restore if minimized, focus)
+                fm.Activate();
+            }
         }
     }
 }

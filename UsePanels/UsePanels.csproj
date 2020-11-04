@@ -80,6 +80,12 @@
     <Compile Include="frmSelectByAttributes.designer.cs">
       <DependentUpon>frmSelectByAttributes.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSelectByLocation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectByLocation.Designer.cs">
+      <DependentUpon>frmSelectByLocation.cs</DependentUpon>
+    </Compile>
     <Compile Include="images\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -95,6 +101,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectByAttributes.resx">
       <DependentUpon>frmSelectByAttributes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectByLocation.resx">
+      <DependentUpon>frmSelectByLocation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="images\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>

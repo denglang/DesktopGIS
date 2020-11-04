@@ -77,18 +77,19 @@
             this.bufferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeLineSymbolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chkBox_addBaseMap = new System.Windows.Forms.CheckBox();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.chkToggleLabelWin = new System.Windows.Forms.CheckBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.moveLayerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.upToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.symbologyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chkBox_addBaseMap = new System.Windows.Forms.CheckBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.chkToggleLabelWin = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.selectByDistanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -379,15 +380,17 @@
             // selectByLocationToolStripMenuItem
             // 
             this.selectByLocationToolStripMenuItem.Name = "selectByLocationToolStripMenuItem";
-            this.selectByLocationToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.selectByLocationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.selectByLocationToolStripMenuItem.Text = "Select By Location";
+            this.selectByLocationToolStripMenuItem.Click += new System.EventHandler(this.selectByLocationToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.intersectToolStripMenuItem,
             this.labelToolStripMenuItem1,
-            this.bufferToolStripMenuItem1});
+            this.bufferToolStripMenuItem1,
+            this.selectByDistanceToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -395,21 +398,21 @@
             // intersectToolStripMenuItem
             // 
             this.intersectToolStripMenuItem.Name = "intersectToolStripMenuItem";
-            this.intersectToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.intersectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.intersectToolStripMenuItem.Text = "Intersect";
             this.intersectToolStripMenuItem.Click += new System.EventHandler(this.intersectToolStripMenuItem_Click);
             // 
             // labelToolStripMenuItem1
             // 
             this.labelToolStripMenuItem1.Name = "labelToolStripMenuItem1";
-            this.labelToolStripMenuItem1.Size = new System.Drawing.Size(119, 22);
+            this.labelToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.labelToolStripMenuItem1.Text = "Label";
             this.labelToolStripMenuItem1.Click += new System.EventHandler(this.labelToolStripMenuItem1_Click);
             // 
             // bufferToolStripMenuItem1
             // 
             this.bufferToolStripMenuItem1.Name = "bufferToolStripMenuItem1";
-            this.bufferToolStripMenuItem1.Size = new System.Drawing.Size(119, 22);
+            this.bufferToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.bufferToolStripMenuItem1.Text = "Buffer";
             this.bufferToolStripMenuItem1.Click += new System.EventHandler(this.bufferToolStripMenuItem1_Click);
             // 
@@ -531,6 +534,52 @@
             this.changeLineSymbolToolStripMenuItem.Text = "Change Line Symbol";
             this.changeLineSymbolToolStripMenuItem.Click += new System.EventHandler(this.changeLineSymbolToolStripMenuItem_Click);
             // 
+            // moveLayerToolStripMenuItem
+            // 
+            this.moveLayerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.upToolStripMenuItem,
+            this.downToolStripMenuItem,
+            this.toTopToolStripMenuItem,
+            this.toBottomToolStripMenuItem});
+            this.moveLayerToolStripMenuItem.Name = "moveLayerToolStripMenuItem";
+            this.moveLayerToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.moveLayerToolStripMenuItem.Text = "Move Layer";
+            // 
+            // upToolStripMenuItem
+            // 
+            this.upToolStripMenuItem.Name = "upToolStripMenuItem";
+            this.upToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.upToolStripMenuItem.Text = "Up";
+            this.upToolStripMenuItem.Click += new System.EventHandler(this.upToolStripMenuItem_Click);
+            // 
+            // downToolStripMenuItem
+            // 
+            this.downToolStripMenuItem.Name = "downToolStripMenuItem";
+            this.downToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.downToolStripMenuItem.Text = "Down";
+            this.downToolStripMenuItem.Click += new System.EventHandler(this.downToolStripMenuItem_Click);
+            // 
+            // toTopToolStripMenuItem
+            // 
+            this.toTopToolStripMenuItem.Name = "toTopToolStripMenuItem";
+            this.toTopToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.toTopToolStripMenuItem.Text = "To Top";
+            this.toTopToolStripMenuItem.Click += new System.EventHandler(this.toTopToolStripMenuItem_Click);
+            // 
+            // toBottomToolStripMenuItem
+            // 
+            this.toBottomToolStripMenuItem.Name = "toBottomToolStripMenuItem";
+            this.toBottomToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.toBottomToolStripMenuItem.Text = "To Bottom";
+            this.toBottomToolStripMenuItem.Click += new System.EventHandler(this.toBottomToolStripMenuItem_Click);
+            // 
+            // symbologyToolStripMenuItem
+            // 
+            this.symbologyToolStripMenuItem.Name = "symbologyToolStripMenuItem";
+            this.symbologyToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.symbologyToolStripMenuItem.Text = "Symbology";
+            this.symbologyToolStripMenuItem.Click += new System.EventHandler(this.symbologyToolStripMenuItem_Click);
+            // 
             // chkBox_addBaseMap
             // 
             this.chkBox_addBaseMap.AutoSize = true;
@@ -577,51 +626,12 @@
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
             // 
-            // moveLayerToolStripMenuItem
+            // selectByDistanceToolStripMenuItem
             // 
-            this.moveLayerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.upToolStripMenuItem,
-            this.downToolStripMenuItem,
-            this.toTopToolStripMenuItem,
-            this.toBottomToolStripMenuItem});
-            this.moveLayerToolStripMenuItem.Name = "moveLayerToolStripMenuItem";
-            this.moveLayerToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.moveLayerToolStripMenuItem.Text = "Move Layer";
-            // 
-            // upToolStripMenuItem
-            // 
-            this.upToolStripMenuItem.Name = "upToolStripMenuItem";
-            this.upToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.upToolStripMenuItem.Text = "Up";
-            this.upToolStripMenuItem.Click += new System.EventHandler(this.upToolStripMenuItem_Click);
-            // 
-            // downToolStripMenuItem
-            // 
-            this.downToolStripMenuItem.Name = "downToolStripMenuItem";
-            this.downToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.downToolStripMenuItem.Text = "Down";
-            this.downToolStripMenuItem.Click += new System.EventHandler(this.downToolStripMenuItem_Click);
-            // 
-            // toTopToolStripMenuItem
-            // 
-            this.toTopToolStripMenuItem.Name = "toTopToolStripMenuItem";
-            this.toTopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.toTopToolStripMenuItem.Text = "To Top";
-            this.toTopToolStripMenuItem.Click += new System.EventHandler(this.toTopToolStripMenuItem_Click);
-            // 
-            // toBottomToolStripMenuItem
-            // 
-            this.toBottomToolStripMenuItem.Name = "toBottomToolStripMenuItem";
-            this.toBottomToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.toBottomToolStripMenuItem.Text = "To Bottom";
-            this.toBottomToolStripMenuItem.Click += new System.EventHandler(this.toBottomToolStripMenuItem_Click);
-            // 
-            // symbologyToolStripMenuItem
-            // 
-            this.symbologyToolStripMenuItem.Name = "symbologyToolStripMenuItem";
-            this.symbologyToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.symbologyToolStripMenuItem.Text = "Symbology";
-            this.symbologyToolStripMenuItem.Click += new System.EventHandler(this.symbologyToolStripMenuItem_Click);
+            this.selectByDistanceToolStripMenuItem.Name = "selectByDistanceToolStripMenuItem";
+            this.selectByDistanceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.selectByDistanceToolStripMenuItem.Text = "Select by Distance";
+            this.selectByDistanceToolStripMenuItem.Click += new System.EventHandler(this.selectByDistanceToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -719,6 +729,7 @@
         private System.Windows.Forms.ToolStripMenuItem toBottomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem symbologyToolStripMenuItem;
         private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.ToolStripMenuItem selectByDistanceToolStripMenuItem;
     }
 }
 
