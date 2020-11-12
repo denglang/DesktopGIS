@@ -31,8 +31,8 @@ namespace UsePanels
             InitializeComponent();
 
             new GlobalSettings() { AllowProjectionMismatch = true, ReprojectLayersOnAdding = true };
-            //axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
-            axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
+            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
+            //axMap1.Projection = tkMapProjection.PROJECTION_WGS84;
             axMap1.KnownExtents = tkKnownExtents.keUSA;
             panel1.Hide();
             //axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
@@ -2275,7 +2275,7 @@ namespace UsePanels
             int layerHandle = getLayerHandle();
             sf = axMap1.get_Shapefile(layerHandle);
 
-            MessageBox.Show(DateAndTime.TimeString);
+            //MessageBox.Show(DateAndTime.TimeString);
 
             var utils = new Utils();
             sf.DefaultDrawingOptions.LineWidth = 3.0f;
@@ -2334,10 +2334,11 @@ namespace UsePanels
             scheme.SetColors2(tkMapColor.LightBlue, tkMapColor.LightYellow);
             sfResult.Categories.ApplyColorScheme(tkColorSchemeType.ctSchemeGraduated, scheme);
             layerHandle = axMap1.AddLayer(sfResult, true);
+            axMap1.set_ShapeLayerFillTransparency(layerHandle, 0.5f);
             axMap1.Redraw();
-            string f = @"c:\work\gis\data\buffer_" + bufferDistance + "_" + DateAndTime.TimeString.Replace(":", "_") + ".shp";
-            sfResult.SaveAs(f, null);
-            axMap1.AddLayerFromFilename(f, tkFileOpenStrategy.fosAutoDetect, true);
+            //string f = @"c:\work\gis\data\buffer_" + bufferDistance + "_" + DateAndTime.TimeString.Replace(":", "_") + ".shp";
+            //sfResult.SaveAs(f, null);
+            //axMap1.AddLayerFromFilename(f, tkFileOpenStrategy.fosAutoDetect, true);
 
         }
 
@@ -2351,8 +2352,14 @@ namespace UsePanels
         }
         private void AxMap1MouseDownEvent3(object sender, _DMapEvents_MouseDownEvent e)
         {
-            int layerHandle = axMap1.get_LayerHandle(0);  // it's assumed here that the layer we want to edit is the first 1 (with 0 index)
+            //int layerHandle = axMap1.get_LayerHandle(0);  // it's assumed here that the layer we want to edit is the first 1 (with 0 index)
+            string layerName = treeView1.SelectedNode.Text;
+            int layerHandle = layerControl[layerName];
             Shapefile sf = axMap1.get_Shapefile(layerHandle);
+            //tkWgs84Projection.Wgs84_UTM_zone_15N = 32615;
+            GeoProjection gp = new GeoProjection();
+            gp.ImportFromEPSG(32615);
+            //axMap1.GeoProjection = gp;
 
             if (sf != null)
             {
@@ -2379,10 +2386,10 @@ namespace UsePanels
                         sf.set_ShapeSelected(shapes[0], true);  // selecting the shape we are about to edit
                         axMap1.Redraw();
                         Application.DoEvents();
-
                     }
                 }
             }
+            MessageBox.Show(sf.NumSelected.ToString());
         }
 
 
@@ -2669,6 +2676,11 @@ namespace UsePanels
             { // ...Yes. We have to activate it (i.e. bring to front, restore if minimized, focus)
                 fm.Activate();
             }
+        }
+
+        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

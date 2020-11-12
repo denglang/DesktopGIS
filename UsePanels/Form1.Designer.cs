@@ -63,6 +63,7 @@
             this.intersectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.bufferToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectByDistanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -89,7 +90,7 @@
             this.chkToggleLabelWin = new System.Windows.Forms.CheckBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.selectByDistanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -380,7 +381,7 @@
             // selectByLocationToolStripMenuItem
             // 
             this.selectByLocationToolStripMenuItem.Name = "selectByLocationToolStripMenuItem";
-            this.selectByLocationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.selectByLocationToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.selectByLocationToolStripMenuItem.Text = "Select By Location";
             this.selectByLocationToolStripMenuItem.Click += new System.EventHandler(this.selectByLocationToolStripMenuItem_Click);
             // 
@@ -398,23 +399,30 @@
             // intersectToolStripMenuItem
             // 
             this.intersectToolStripMenuItem.Name = "intersectToolStripMenuItem";
-            this.intersectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.intersectToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.intersectToolStripMenuItem.Text = "Intersect";
             this.intersectToolStripMenuItem.Click += new System.EventHandler(this.intersectToolStripMenuItem_Click);
             // 
             // labelToolStripMenuItem1
             // 
             this.labelToolStripMenuItem1.Name = "labelToolStripMenuItem1";
-            this.labelToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.labelToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
             this.labelToolStripMenuItem1.Text = "Label";
             this.labelToolStripMenuItem1.Click += new System.EventHandler(this.labelToolStripMenuItem1_Click);
             // 
             // bufferToolStripMenuItem1
             // 
             this.bufferToolStripMenuItem1.Name = "bufferToolStripMenuItem1";
-            this.bufferToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.bufferToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
             this.bufferToolStripMenuItem1.Text = "Buffer";
             this.bufferToolStripMenuItem1.Click += new System.EventHandler(this.bufferToolStripMenuItem1_Click);
+            // 
+            // selectByDistanceToolStripMenuItem
+            // 
+            this.selectByDistanceToolStripMenuItem.Name = "selectByDistanceToolStripMenuItem";
+            this.selectByDistanceToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.selectByDistanceToolStripMenuItem.Text = "Select by Distance";
+            this.selectByDistanceToolStripMenuItem.Click += new System.EventHandler(this.selectByDistanceToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -458,9 +466,10 @@
             this.labelToolStripMenuItem,
             this.changeLineSymbolToolStripMenuItem,
             this.moveLayerToolStripMenuItem,
-            this.symbologyToolStripMenuItem});
+            this.symbologyToolStripMenuItem,
+            this.propertiesToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(184, 224);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(184, 268);
             // 
             // zoomToLayerToolStripMenuItem
             // 
@@ -626,12 +635,12 @@
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
             // 
-            // selectByDistanceToolStripMenuItem
+            // propertiesToolStripMenuItem
             // 
-            this.selectByDistanceToolStripMenuItem.Name = "selectByDistanceToolStripMenuItem";
-            this.selectByDistanceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.selectByDistanceToolStripMenuItem.Text = "Select by Distance";
-            this.selectByDistanceToolStripMenuItem.Click += new System.EventHandler(this.selectByDistanceToolStripMenuItem_Click);
+            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.propertiesToolStripMenuItem.Text = "Properties";
+            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -730,6 +739,7 @@
         private System.Windows.Forms.ToolStripMenuItem symbologyToolStripMenuItem;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.ToolStripMenuItem selectByDistanceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
     }
 }
 
