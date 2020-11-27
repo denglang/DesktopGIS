@@ -74,6 +74,12 @@
     <Compile Include="frmColorCodeLine.designer.cs">
       <DependentUpon>frmColorCodeLine.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmLayerProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLayerProperties.Designer.cs">
+      <DependentUpon>frmLayerProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmSelectByAttributes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +104,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmColorCodeLine.resx">
       <DependentUpon>frmColorCodeLine.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLayerProperties.resx">
+      <DependentUpon>frmLayerProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectByAttributes.resx">
       <DependentUpon>frmSelectByAttributes.cs</DependentUpon>

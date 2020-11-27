@@ -23,3 +23,4 @@ C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\MapWinGIS_AE.frmSelec
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.csproj.CoreCompileInputs.cache
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\MapWinGIS_AE.frmColorCodeLine.resources
 C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.frmSelectByLocation.resources
+C:\Users\ldeng\source\repos\DesktopGIS\UsePanels\obj\Debug\UsePanels.frmLayerProperties.resources

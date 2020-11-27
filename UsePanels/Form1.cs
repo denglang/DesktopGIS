@@ -62,23 +62,31 @@ namespace UsePanels
             axMap1.SendMouseMove = true;
             axMap1.CursorMode = tkCursorMode.cmIdentify;
             axMap1.ShapeHighlighted += AxMap1ShapeHighlighted;
-            m_label = toolStripStatusLabel1;
+            //m_label = toolStripStatusLabel1;
 
         }
         private void AxMap1ShapeHighlighted(object sender, _DMapEvents_ShapeHighlightedEvent e)
         {
             toolStripStatusLabel1.Text = "";
+            //lstAttributes.Items.Clear();
             Shapefile sf = axMap1.get_Shapefile(e.layerHandle);
             if (sf != null)
             {
                 string s = "";
                 for (int i = 0; i < sf.NumFields; i++)
                 {
+                    if ( i <= 10) { 
                     string val = sf.get_CellValue(i, e.shapeIndex).ToString();
                     if (val == "") val = "null";
-                    s += sf.Table.Field[i].Name + ":" + val + "; ";
+                    s += sf.Table.Field[i].Name + ": " + val + "; ";
+                        //lstAttributes.Items.Add(sf.Table.Field[i].Name + ":" + val + "; ");
+                    }
                 }
                 toolStripStatusLabel1.Text = s;
+                //MessageBox.Show(s);
+                //lstAttributes.Text = s; 
+                //lstAttributes.Show();
+                //lstAttributes.BringToFront();
             }
         }
         private void openTableToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2680,7 +2688,48 @@ namespace UsePanels
 
         private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            int layerHandle = getLayerHandle();
+            frmLayerProperties fm = Application
+              .OpenForms
+              .OfType<frmLayerProperties>()
+              .LastOrDefault();
 
+            if (null == fm)
+            {
+                // fm = new frmSelectByAttributes(sf);
+                fm = new frmLayerProperties();
+                fm.lblLayerDescription.Text = axMap1.get_LayerDescription(layerHandle);
+                fm.lblLayerSource.Text = axMap1.get_LayerFilename(layerHandle);
+                fm.lblMaxScale.Text = axMap1.get_LayerMaxVisibleScale(layerHandle).ToString();
+                fm.lblMinScale.Text = axMap1.get_LayerMinVisibleScale(layerHandle).ToString();
+                //fm.cmbSourceLayer.Items.Clear();
+                //fm.cmbSourceLayer.Items.Insert(0, "Please select a layer below");
+                //foreach (TreeNode N in treeView1.Nodes)
+                //{
+                //    fm.chkLstBox.Items.Add(N.Text);
+                //    fm.cmbSourceLayer.Items.Add(N.Text);
+                //}
+                //fm.cmbSourceLayer.SelectedIndex = 0;
+                //fm.cmbSourceLayer.SelectedIndex = 0;
+                //fm.cmbSpatialMethod.SelectedIndex = 0;
+                //fm.cmbMethod.SelectedIndex = 0;
+                fm.Show();
+                fm.BringToFront();
+            }
+            else
+            { // ...Yes. We have to activate it (i.e. bring to front, restore if minimized, focus)
+                fm.Activate();
+            }
+        }
+
+        private void addCircleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void btnShowAttributes_Click(object sender, EventArgs e)
+        {
+            ShowAttributes();
         }
     }
 }
