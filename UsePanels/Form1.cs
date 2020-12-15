@@ -1,4 +1,4 @@
-﻿using AxMapWinGIS;
+﻿ using AxMapWinGIS;
 using MapWinGIS;
 using System;
 using System.Collections.Generic;
@@ -52,9 +52,9 @@ namespace UsePanels
         public void ShowAttributes()
         {
             axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
-            Shapefile sf = new Shapefile();
-            int handle = getLayerHandle();
-            sf = axMap1.get_Shapefile(handle);
+           // Shapefile sf = new Shapefile();
+            //int handle = getLayerHandle();
+            //sf = axMap1.get_Shapefile(handle);
 
             //m_layerHandle = axMap1.AddLayer(sf,true);
             //sf = axMap1.get_Shapefile(m_layerHandle);     // in case a copy of shapefile was created by GlobalSettings.ReprojectLayersOnAdding
@@ -67,25 +67,25 @@ namespace UsePanels
         }
         private void AxMap1ShapeHighlighted(object sender, _DMapEvents_ShapeHighlightedEvent e)
         {
-            toolStripStatusLabel1.Text = "";
+            toolStripStatusLabel1.Text = ""; 
             //lstAttributes.Items.Clear();
-            Shapefile sf = axMap1.get_Shapefile(e.layerHandle);
+            Shapefile sf = axMap1.get_Shapefile(e.layerHandle); //very important way to get layerHandle
             if (sf != null)
             {
                 string s = "";
                 for (int i = 0; i < sf.NumFields; i++)
                 {
                     if ( i <= 10) { 
-                    string val = sf.get_CellValue(i, e.shapeIndex).ToString();
-                    if (val == "") val = "null";
-                    s += sf.Table.Field[i].Name + ": " + val + "; ";
-                        //lstAttributes.Items.Add(sf.Table.Field[i].Name + ":" + val + "; ");
+                        string val = sf.get_CellValue(i, e.shapeIndex).ToString();
+                        if (val == "") val = "null";
+                        s += sf.Table.Field[i].Name + ": " + val + "; ";
+                            //lstAttributes.Items.Add(sf.Table.Field[i].Name + ":" + val + "; ");
                     }
                 }
                 toolStripStatusLabel1.Text = s;
                 //MessageBox.Show(s);
                 //lstAttributes.Text = s; 
-                //lstAttributes.Show();
+                lstAttributes.Hide();
                 //lstAttributes.BringToFront();
             }
         }
@@ -211,7 +211,7 @@ namespace UsePanels
                 //lblMapProjection.Text = axMap1.Projection.ToString();
                 //***********************************************
                 //axMap1.Projection = tkMapProjection;
-                //MessageBox.Show(axMap1.Projection.ToString());
+                //MessageBox.Show(axMap1.Projection.ToString());             
 
                 int layerHandle = -1;
 
@@ -853,14 +853,30 @@ namespace UsePanels
 
         private void btnIdentify_Click(object sender, EventArgs e)
         {
-            ShowAttributes();
+
+           // ShowAttributes();
             //Cursor.Current = Cursor
             //axMap1.CursorMode = tkCursorMode.cmIdentify;
+            axMap1.SendMouseDown = true;
+            axMap1.CursorMode = tkCursorMode.cmIdentify;
+            axMap1.ShapeIdentified += axMap1_ShapeIdentified;
             //if (treeView1.SelectedNode != null)
             //{
-            //    Shapefile sf = new Shapefile();
-            //    int layerHandle = getLayerHandle();
-            //    sf = axMap1.get_Shapefile(layerHandle);
+            //Shapefile sf = new Shapefile();
+            ////int layerHandle = getLayerHandle();
+
+            //axMap1.Identifier.IdentifierMode = tkIdentifierMode.imAllLayersStopOnFirst;    //imAllLayers;
+            //Color theColor = Color.Brown;
+            //axMap1.Identifier.OutlineColor = (uint)theColor.ToArgb();
+            //axMap1.Identifier.HotTracking = false;
+
+            //var shapes = axMap1.IdentifiedShapes;
+            //for (int j = 0; j < shapes.Count; j++)
+            //{
+            //    int hnd = shapes.LayerHandle[j];
+
+            //    sf = axMap1.get_Shapefile(hnd);
+            //    sf.Identifiable = true;
 
             //    string expression = "";
             //    for (int i = 1; i < sf.NumFields; i++)      // all the fields will be displayed apart the first one
@@ -872,16 +888,18 @@ namespace UsePanels
             //            expression += string.Format("+ {0} +", endLine);
             //        }
             //    }
-            //     sf.Labels.Generate(expression, tkLabelPositioning.lpCentroid, false);
-            //     sf.Labels.TextRenderingHint = tkTextRenderingHint.SystemDefault;
+            //    sf.Labels.Generate(expression, tkLabelPositioning.lpCentroid, false);
+            //    sf.Labels.TextRenderingHint = tkTextRenderingHint.SystemDefault;
 
-            //    //axMap1.SendMouseDown = true;
-            //    axMap1.CursorMode = tkCursorMode.cmIdentify;
-            //    //axMap1.ShapeIdentified += axMap1_ShapeIdentified;
-            //    // change MapEvents to axMap1
-            //    // axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
-            //    // axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
-            //    // this.ZoomToValue(sf, "Name", "Iowa");
+            //    MessageBox.Show(expression);
+                
+            //}
+
+
+            // change MapEvents to axMap1
+            // axMap1.MouseDownEvent -= AxMap1MouseDownEvent2;
+            // axMap1.MouseDownEvent += AxMap1MouseDownEvent2;
+            // this.ZoomToValue(sf, "Name", "Iowa");
             //}
             //else MessageBox.Show("Please select a layer");
         }
@@ -968,36 +986,37 @@ namespace UsePanels
 
         private void saveFile(Shapefile sf)
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            //saveFileDialog1.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
-            //saveFileDialog1.Title = "Save an Image File";
-            sfd.Filter = "Shape File|*.shp";
-            sfd.Title = "Save a Shapefile";
-            sfd.InitialDirectory = @"C:\work\gis\data";
-            sfd.ShowDialog();
-            //sfd.CheckFileExists = true;
-            //sfd.CheckPathExists = true;
+                SaveFileDialog sfd = new SaveFileDialog();
+                //saveFileDialog1.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
+                //saveFileDialog1.Title = "Save an Image File";
+                sfd.Filter = "Shape File|*.shp";
+                sfd.Title = "Save a Shapefile";
+                sfd.InitialDirectory = @"C:\work\gis\data";
+                sfd.ShowDialog();
+                //sfd.CheckFileExists = true;
+                //sfd.CheckPathExists = true;
 
-            string f = "";
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                f = sfd.FileName;
-            }
+                string f = "";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    f = sfd.FileName;
+                }
 
-            //File.Delete(f);
-            //deleteFiles(f);
-            // MessageBox.Show(f);
-            if (sf != null)
-            {
-                sf.SaveAs(f, null);
-                //frm.Hide();
-                // MessageBox.Show("Shapefile creatd and saved to " + f);
-                AddLayerToMap(f);
-            }
-            else
-            {
-                MessageBox.Show("No shapefile created!");
-            }
+                //File.Delete(f);
+                //deleteFiles(f);
+                // MessageBox.Show(f);
+                if (sf != null)
+                {
+                    sf.SaveAs(f, null);
+                    //frm.Hide();
+                    // MessageBox.Show("Shapefile creatd and saved to " + f);
+                    AddLayerToMap(f);
+                }
+                else
+                {
+                    MessageBox.Show("No shapefile created!");
+                }
+            
         }
 
         private string saveFile(string fileType)
@@ -1457,7 +1476,8 @@ namespace UsePanels
             //add custom provider definition
 
             axMap1.Tiles.Providers.Add(ID, "ESRI",
-                "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{zoom}/{y}/{x}",
+                 "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{zoom}/{y}/{x}",
+               
                 //"https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{zoom}/{y}/{x}",
                 tkTileProjection.SphericalMercator, 0, 19,
                 "Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community");
@@ -1528,8 +1548,9 @@ namespace UsePanels
 
         private void axMap1_ShapeIdentified(object sender, _DMapEvents_ShapeIdentifiedEvent e)
         {
-            int layerHandle = getLayerHandle();
 
+            int layerHandle = e.layerHandle; //getLayerHandle();
+            if (layerHandle < 0) return; 
             Shapefile sf = axMap1.get_Shapefile(layerHandle);
             sf.Identifiable = true;
             //MessageBox.Show(layerControl[layerHandle])
@@ -1537,9 +1558,9 @@ namespace UsePanels
             {
                 double projX = 0.0;
                 double projY = 0.0;
-                // axMap1.PixelToProj(e.pointX, e.pointY, ref projX, ref projY);
-                projX = e.pointX;
-                projY = e.pointY;
+                axMap1.PixelToProj(e.pointX, e.pointY, ref projX, ref projY);
+                //projX = e.pointX;
+                //projY = e.pointY;
                 object result = null;
                 Extents ext = new Extents();
                 ext.SetBounds(projX, projY, 0.0, projX, projY, 0.0);
@@ -1965,6 +1986,7 @@ namespace UsePanels
                 else
                 {
                     sf.Labels.Generate("[" + labelFiledName + "]", tkLabelPositioning.lpCentroid, false);
+                    
                 }
                 //sf.Labels.Generate("[COUNTY]", tkLabelPositioning.lpCentroid, false);
                 sf.Labels.Synchronized = true;
@@ -2352,52 +2374,115 @@ namespace UsePanels
 
         private void toolSelectShape_Click(object sender, EventArgs e)
         {
-            axMap1.SendMouseDown = true;
+            axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
+            //axMap1.SendMouseDown = true;
+            //axMap1.CursorMode = tkCursorMode.cmNone;
+           // axMap1.MouseDownEvent += AxMap1MouseDownEvent3;  // change MapEvents to axMap1
+            axMap1.SendSelectBoxFinal = true;
+           
+            axMap1.SelectBoxFinal += AxMap1SelectBoxFinal;
+            axMap1.MapUnits = tkUnitsOfMeasure.umMeters;
+            //axMap1.CurrentScale = 50000;
+            axMap1.CursorMode = tkCursorMode.cmSelection;
+        }
 
-            axMap1.CursorMode = tkCursorMode.cmNone;
-            axMap1.MouseDownEvent += AxMap1MouseDownEvent3;  // change MapEvents to axMap1
+        void AxMap1SelectBoxFinal(object sender, _DMapEvents_SelectBoxFinalEvent e)
+        {
+            // it's assumed here that the layer we want to edit is the first 1 (with 0 index)
+            //MessageBox.Show(e.ToString());
+            //lblAttributeTitle.Hide();
+            // var shapes = axMap1.IdentifiedShapes;
 
+            //for (int j = 0; j < shapes.Count; j++)
+            //{
+            //    int layerHandle = shapes.LayerHandle[j];
+            //    Shapefile sf = axMap1.get_Shapefile(layerHandle);
+            //    sf = axMap1.get_Shapefile(layerHandle);
+            //    sf.Identifiable = true;
+            int layerHandle = axMap1.get_LayerHandle(0);
+            Shapefile sf = axMap1.get_Shapefile(layerHandle);
+
+            if (sf != null)
+                {
+                    double left = 0.0;
+                    double top = 0.0;
+                    double bottom = 0.0;
+                    double right = 0.0;
+                    axMap1.PixelToProj(e.left, e.top, ref left, ref top);
+                    axMap1.PixelToProj(e.right, e.bottom, ref right, ref bottom);
+                    object result = null;
+                    var ext = new Extents();
+                    ext.SetBounds(left, bottom, 0.0, right, top, 0.0);
+                   
+                    sf.SelectNone();
+                    if (sf.SelectShapes(ext, 0.0, SelectMode.INTERSECTION, ref result))
+                    {
+                        int[] selectedShapes = result as int[];
+                        if (selectedShapes == null) return;
+                        for (int i = 0; i < selectedShapes.Length; i++)
+                        {
+                            sf.set_ShapeSelected(selectedShapes[i], true);
+                        //dataGridView1.SelectedRows[selectedShapes[i]];
+                        }
+                    }
+               
+                axMap1.Redraw();
+                
+                // }
+            }
+           
+            MessageBox.Show(sf.NumSelected.ToString());
+            axMap1.SelectBoxFinal -= AxMap1SelectBoxFinal;
+            axMap1.CursorMode = tkCursorMode.cmPan;
         }
         private void AxMap1MouseDownEvent3(object sender, _DMapEvents_MouseDownEvent e)
         {
             //int layerHandle = axMap1.get_LayerHandle(0);  // it's assumed here that the layer we want to edit is the first 1 (with 0 index)
-            string layerName = treeView1.SelectedNode.Text;
-            int layerHandle = layerControl[layerName];
-            Shapefile sf = axMap1.get_Shapefile(layerHandle);
+            //string layerName = treeView1.SelectedNode.Text;
+            var shapesFound = axMap1.IdentifiedShapes;
+            for (int j = 0; j < shapesFound.Count; j++)
+            {
+                int layerHandle = shapesFound.LayerHandle[j];
+                Shapefile sf = axMap1.get_Shapefile(layerHandle);
+                sf = axMap1.get_Shapefile(layerHandle);
+                //int layerHandle = layerControl[layerName];
+                //Shapefile sf = axMap1.get_Shapefile(layerHandle);
+            
             //tkWgs84Projection.Wgs84_UTM_zone_15N = 32615;
-            GeoProjection gp = new GeoProjection();
-            gp.ImportFromEPSG(32615);
+            //GeoProjection gp = new GeoProjection();
+            //gp.ImportFromEPSG(32615);
             //axMap1.GeoProjection = gp;
 
-            if (sf != null)
-            {
-                double projX = 0.0;
-                double projY = 0.0;
-                axMap1.PixelToProj(e.x, e.y, ref projX, ref projY);
-
-                object result = null;
-                Extents ext = new Extents();
-                ext.SetBounds(projX, projY, 0.1, projX, projY, 0.1);
-                if (sf.SelectShapes(ext, 0.0, SelectMode.INCLUSION, ref result))
+                if (sf != null)
                 {
-                    int[] shapes = result as int[];
-                    if (shapes == null) return;
-                    if (shapes.Length > 1)
+                    double projX = 0.0;
+                    double projY = 0.0;
+                    axMap1.PixelToProj(e.x, e.y, ref projX, ref projY);
+
+                    object result = null;
+                    Extents ext = new Extents();
+                    ext.SetBounds(projX, projY, 0.1, projX, projY, 0.1);
+                    if (sf.SelectShapes(ext, 0.0, SelectMode.INCLUSION, ref result))
                     {
-                        string s = "More than one shapes were selected. Shape indices:";
-                        for (int i = 0; i < shapes.Length; i++)
-                            s += shapes[i] + Environment.NewLine;
-                        MessageBox.Show(s);
-                    }
-                    else
-                    {
-                        sf.set_ShapeSelected(shapes[0], true);  // selecting the shape we are about to edit
-                        axMap1.Redraw();
-                        Application.DoEvents();
+                        int[] shapes = result as int[];
+                        if (shapes == null) return;
+                        if (shapes.Length > 1)
+                        {
+                            string s = "More than one shapes were selected. Shape indices:";
+                            for (int i = 0; i < shapes.Length; i++)
+                                s += shapes[i] + Environment.NewLine;
+                            MessageBox.Show(s);
+                        }
+                        else
+                        {
+                            sf.set_ShapeSelected(shapes[0], true);  // selecting the shape we are about to edit
+                            axMap1.Redraw();
+                            Application.DoEvents();
+                        }
                     }
                 }
-            }
-            MessageBox.Show(sf.NumSelected.ToString());
+                MessageBox.Show(sf.NumSelected.ToString());
+            }           
         }
 
 
@@ -2592,7 +2677,7 @@ namespace UsePanels
 
         private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            int intHandler = getLayerHandle();
+            int intHandler = getLayerHandle(); 
             Shapefile sf = new Shapefile();
             sf = axMap1.get_Shapefile(intHandler);
             //DataGridViewColumn c = dataGridView1.Columns(e.ColumnIndex);
@@ -2730,6 +2815,47 @@ namespace UsePanels
         private void btnShowAttributes_Click(object sender, EventArgs e)
         {
             ShowAttributes();
+        }
+
+        private void toolStripButtonGoTo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exportAllShapefilesInTOCToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (treeView1.Nodes.Count > 0)
+            {
+                var folderBrowserDialog1 = new FolderBrowserDialog();
+                folderBrowserDialog1.RootFolder = Environment.SpecialFolder.MyComputer;
+                folderBrowserDialog1.SelectedPath = @"C:\";
+                //folderBrowserDialog1.SelectedPath = @"C:Work\data\test";
+                // Show the FolderBrowserDialog.
+                DialogResult result = folderBrowserDialog1.ShowDialog();
+                string folderName = "";
+                if (result == DialogResult.OK)
+                {
+                    folderName = folderBrowserDialog1.SelectedPath;          
+                }
+
+                for (int i = 0; i < treeView1.Nodes.Count; i++)
+                {
+                    string path = Path.GetFullPath(treeView1.Nodes[i].Text);
+                   // var fileInfo = new FileInfo(treeView1.Nodes[i].Text);
+                    //string nn = fileInfo.DirectoryName;
+                    //if (path.EndsWith(".shp")) {                   
+                    
+                        string lyName = treeView1.Nodes[i].Text;
+                        int lyHandle = layerControl[lyName];
+                        Shapefile sf = axMap1.get_Shapefile(lyHandle);
+                        //sf.Shape()
+                        string f = folderName + "\\" + lyName + "_exported.shp";
+                        sf.SaveAs(f, null);
+                    //}
+                    AddLayerToMap(f);                    
+                }
+            }
+            else MessageBox.Show("No layers in map"); return;            
         }
     }
 }
