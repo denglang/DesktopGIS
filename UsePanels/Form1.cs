@@ -13,6 +13,7 @@ using System.Text;
 using System.Drawing;
 using Microsoft.VisualBasic;
 
+
 namespace UsePanels
 {
     public partial class Form1 : Form
@@ -478,6 +479,85 @@ namespace UsePanels
             axMap1.ZoomToLayer(layerHandle);
             createAttributeTable();
 
+            //Shapefile sf1 =axMap1.get_Shapefile(layerHandle);
+            Shapefile sf1 = new Shapefile();
+            Shapefile sf2 = new Shapefile();
+           // string f1 = @"D:\shp\EB Cumberland + Roslyn Ave_profile_shapefile_csv.shp";
+          //  string f2 = @"D:\shp\EB Greenwood_profile_shapefile_csv.shp";
+          //  sf1.Open(f1, null);
+          //  sf2.Open(f2, null);
+
+           // mergeShapefile(sf1, sf2);
+
+        }
+
+        private void btnMergeShapefiles_Click(object sender, EventArgs e)
+        {
+
+            System.Collections.Stack fileStack = new System.Collections.Stack();
+            string[] filenames = openFile();
+            if (filenames == null || filenames.Length == 0)
+            {
+                return;
+            }
+
+            if (filenames.Length == 1)
+            {
+                //AddLayerToMap(filenames[0]);
+                MessageBox.Show("Need at least two shapefile to merge.");
+            }
+
+            foreach (var f in filenames)
+            {
+                fileStack.Push(f);
+                //MessageBox.Show(f);
+            }
+            //MessageBox.Show("From Stak:");
+            //MessageBox.Show(fileStack.Pop().ToString());
+            //MessageBox.Show(fileStack.Pop().ToString());
+
+            Shapefile sf = new Shapefile();
+            Shapefile sf2 = new Shapefile();
+
+            sf.Open(fileStack.Pop().ToString(), null);
+
+            while (fileStack.Count > 0)
+            {
+                sf2.Open(fileStack.Pop().ToString(), null);
+                if (sf != null)
+                {
+                    sf = mergeShapefile(sf, sf2);
+                }
+                
+            }
+
+            // save if needed
+            string filename = @"D:\shp\NorthDakota\mergedPolygon.shp";
+            sf.SaveAs(filename, null);
+            AddLayerToMap(filename);
+
+        }
+
+        public Shapefile mergeShapefile(Shapefile sp1, Shapefile sp2)
+        {
+            if (sp1.ShapefileType != sp2.ShapefileType)
+            {
+                MessageBox.Show(sp1.Filename + " is " + sp1.ShapefileType + ", different from " + sp2.Filename + ", which is " + sp2.ShapefileType);
+                return  null;
+            }
+
+            //if (sp1.NumFields != sp2.NumFields)
+            //{
+
+            //}
+
+            Shapefile sf = sp1.Merge(false, sp2, false);
+            return sf;
+            //axMap1.AddLayer(sf, true);
+            // save if needed
+           // string filename = @"D:\shp\merged.shp";
+          //  sf.SaveAs(filename, null);
+           // AddLayerToMap(filename);
         }
 
         public bool AddLayers(AxMap axMap1, string dataPath)
@@ -2857,5 +2937,7 @@ namespace UsePanels
             }
             else MessageBox.Show("No layers in map"); return;            
         }
+
+       
     }
 }

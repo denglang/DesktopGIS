@@ -49,6 +49,7 @@
             this.toolClearSelection = new System.Windows.Forms.ToolStripButton();
             this.toolSelectShape = new System.Windows.Forms.ToolStripButton();
             this.btnShowAttributes = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonGoTo = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,6 +58,7 @@
             this.aRDToShapefileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cSVToShapefileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shapefileToKMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAllShapefilesInTOCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectByLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,8 +99,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.lstAttributes = new System.Windows.Forms.ListBox();
-            this.toolStripButtonGoTo = new System.Windows.Forms.ToolStripButton();
-            this.exportAllShapefilesInTOCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnMergeShapefiles = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -317,6 +318,16 @@
             this.btnShowAttributes.Text = "Show";
             this.btnShowAttributes.Click += new System.EventHandler(this.btnShowAttributes_Click);
             // 
+            // toolStripButtonGoTo
+            // 
+            this.toolStripButtonGoTo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonGoTo.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonGoTo.Image")));
+            this.toolStripButtonGoTo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonGoTo.Name = "toolStripButtonGoTo";
+            this.toolStripButtonGoTo.Size = new System.Drawing.Size(75, 24);
+            this.toolStripButtonGoTo.Text = "GoTo: X,Y";
+            this.toolStripButtonGoTo.Click += new System.EventHandler(this.toolStripButtonGoTo_Click);
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -369,22 +380,29 @@
             // aRDToShapefileToolStripMenuItem
             // 
             this.aRDToShapefileToolStripMenuItem.Name = "aRDToShapefileToolStripMenuItem";
-            this.aRDToShapefileToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.aRDToShapefileToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
             this.aRDToShapefileToolStripMenuItem.Text = "ARD to Shapefile";
             this.aRDToShapefileToolStripMenuItem.Click += new System.EventHandler(this.aRDToShapefileToolStripMenuItem_Click);
             // 
             // cSVToShapefileToolStripMenuItem
             // 
             this.cSVToShapefileToolStripMenuItem.Name = "cSVToShapefileToolStripMenuItem";
-            this.cSVToShapefileToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.cSVToShapefileToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
             this.cSVToShapefileToolStripMenuItem.Text = "CSV to Shapefile";
             // 
             // shapefileToKMLToolStripMenuItem
             // 
             this.shapefileToKMLToolStripMenuItem.Name = "shapefileToKMLToolStripMenuItem";
-            this.shapefileToKMLToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.shapefileToKMLToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
             this.shapefileToKMLToolStripMenuItem.Text = "Batch Shapefile to KML";
             this.shapefileToKMLToolStripMenuItem.Click += new System.EventHandler(this.shapefileToKMLToolStripMenuItem_Click);
+            // 
+            // exportAllShapefilesInTOCToolStripMenuItem
+            // 
+            this.exportAllShapefilesInTOCToolStripMenuItem.Name = "exportAllShapefilesInTOCToolStripMenuItem";
+            this.exportAllShapefilesInTOCToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.exportAllShapefilesInTOCToolStripMenuItem.Text = "Export All Shapefiles in TOC";
+            this.exportAllShapefilesInTOCToolStripMenuItem.Click += new System.EventHandler(this.exportAllShapefilesInTOCToolStripMenuItem_Click);
             // 
             // selectionToolStripMenuItem
             // 
@@ -705,28 +723,22 @@
             this.lstAttributes.TabIndex = 10;
             this.lstAttributes.Visible = false;
             // 
-            // toolStripButtonGoTo
+            // btnMergeShapefiles
             // 
-            this.toolStripButtonGoTo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonGoTo.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonGoTo.Image")));
-            this.toolStripButtonGoTo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonGoTo.Name = "toolStripButtonGoTo";
-            this.toolStripButtonGoTo.Size = new System.Drawing.Size(75, 24);
-            this.toolStripButtonGoTo.Text = "GoTo: X,Y";
-            this.toolStripButtonGoTo.Click += new System.EventHandler(this.toolStripButtonGoTo_Click);
-            // 
-            // exportAllShapefilesInTOCToolStripMenuItem
-            // 
-            this.exportAllShapefilesInTOCToolStripMenuItem.Name = "exportAllShapefilesInTOCToolStripMenuItem";
-            this.exportAllShapefilesInTOCToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
-            this.exportAllShapefilesInTOCToolStripMenuItem.Text = "Export All Shapefiles in TOC";
-            this.exportAllShapefilesInTOCToolStripMenuItem.Click += new System.EventHandler(this.exportAllShapefilesInTOCToolStripMenuItem_Click);
+            this.btnMergeShapefiles.Location = new System.Drawing.Point(639, 27);
+            this.btnMergeShapefiles.Name = "btnMergeShapefiles";
+            this.btnMergeShapefiles.Size = new System.Drawing.Size(113, 23);
+            this.btnMergeShapefiles.TabIndex = 11;
+            this.btnMergeShapefiles.Text = "Merge Shapefiles";
+            this.btnMergeShapefiles.UseVisualStyleBackColor = true;
+            this.btnMergeShapefiles.Click += new System.EventHandler(this.btnMergeShapefiles_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1092, 716);
+            this.Controls.Add(this.btnMergeShapefiles);
             this.Controls.Add(this.lstAttributes);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.chkToggleLabelWin);
@@ -829,6 +841,7 @@
         private System.Windows.Forms.ListBox lstAttributes;
         private System.Windows.Forms.ToolStripButton toolStripButtonGoTo;
         private System.Windows.Forms.ToolStripMenuItem exportAllShapefilesInTOCToolStripMenuItem;
+        private System.Windows.Forms.Button btnMergeShapefiles;
     }
 }
 
