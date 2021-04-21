@@ -493,44 +493,82 @@ namespace UsePanels
 
         private void shpQueue()
         {
-            System.Collections.Queue fileQueue = new System.Collections.Queue();
+            System.Collections.Queue pointQueue = new System.Collections.Queue();
+            System.Collections.Queue lineQueue = new System.Collections.Queue();
+            System.Collections.Queue polygonQueue = new System.Collections.Queue();
+
             string[] filenames = openFile();
+
+            if (filenames == null || filenames.Length == 0)
+            {
+                return;
+            }
+
+            if (filenames.Length == 1)
+            {
+                //AddLayerToMap(filenames[0]);
+                MessageBox.Show("Need at least two shapefile to merge.");
+                return;
+            }
 
             foreach (var f in filenames)
             {
-                fileQueue.Enqueue(f);
+                //create shapefile here, get shapeType and add to different stack by type(point, polyline or polygon)
+                Shapefile sp = new Shapefile();
+                sp.Open(f, null);
+                if (sp.ShapefileType == ShpfileType.SHP_POLYLINE)
+                {
+                    lineQueue.Enqueue(sp);
+                }
+                else if (sp.ShapefileType == ShpfileType.SHP_POINT)
+                {
+                    pointQueue.Enqueue(sp);
+                }
+                else if (sp.ShapefileType == ShpfileType.SHP_POLYGON)
+                {
+                    polygonQueue.Enqueue(sp);
+                }
+                else
+                {
+                    MessageBox.Show("Invalid Shapetype.");
+                    return;
+                }
+              
             }
+            if (lineQueue.Count > 0) mergeQueueFile(lineQueue);
+            if (pointQueue.Count > 0) mergeQueueFile(pointQueue);
+            if (polygonQueue.Count > 0) mergeQueueFile(polygonQueue);
 
-            Shapefile sf = new Shapefile();
-            sf.Open(fileQueue.Dequeue().ToString(),null);
-            Shapefile sf2 = new Shapefile();
 
-            while (fileQueue.Count > 0)
-            {
-                sf2.Open(fileQueue.Dequeue().ToString(), null);
-                sf = mergeShapefile(sf,sf2); 
-            }
+            //Shapefile sf = new Shapefile();
+            //sf.Open(fileQueue.Dequeue().ToString(),null);
+            //Shapefile sf2 = new Shapefile();
 
-            DateTime now = DateTime.Now;
+            //while (fileQueue.Count > 0)
+            //{
+            //    sf2.Open(fileQueue.Dequeue().ToString(), null);
+            //    sf = mergeShapefile(sf,sf2); 
+            //}
 
-            string tString = now.ToString("yyyy'_'MM'_'dd'_'HH':'mm':'ss").Replace(":", "_").Replace(" ", "_");
+            //DateTime now = DateTime.Now;
 
-            // MessageBox.Show(tString);
+            //string tString = now.ToString("yyyy'_'MM'_'dd'_'HH':'mm':'ss").Replace(":", "_").Replace(" ", "_");
 
-            // save if needed
-            string filename = @"D:\shp\NorthDakota\merged_" + sf.ShapefileType + "_" + tString + ".shp";
-            sf.SaveAs(filename, null);
-            AddLayerToMap(filename);
+            //// MessageBox.Show(tString);
+
+            //// save if needed
+            //string filename = @"D:\shp\NorthDakota\merged_" + sf.ShapefileType + "_" + tString + ".shp";
+            //sf.SaveAs(filename, null);
+            //AddLayerToMap(filename);
         }
         private void btnMergeShapefiles_Click(object sender, EventArgs e)
         {
-            shpQueue();
-            return;
-            //DateTime now = DateTime.Now;
-            //string Tnow=now.ToString("yyyy'_'MM'_'dd'_'HH':'mm':'ss").Replace(":","_");
-
-            //MessageBox.Show(Tnow);
-
+             //shpQueue();
+            shpStack();
+        }  
+        
+        private void shpStack()
+        {
             System.Collections.Stack fileStack = new System.Collections.Stack();
             System.Collections.Stack pointStack = new System.Collections.Stack();
             System.Collections.Stack polylineStack = new System.Collections.Stack();
@@ -554,34 +592,35 @@ namespace UsePanels
                 //create shapefile here, get shapeType and add to different stack by type(point, polyline or polygon)
                 Shapefile sp = new Shapefile();
                 sp.Open(f, null);
-                if (sp.ShapefileType== ShpfileType.SHP_POLYLINE)
+                if (sp.ShapefileType == ShpfileType.SHP_POLYLINE)
                 {
                     polylineStack.Push(sp);
-                } else if (sp.ShapefileType == ShpfileType.SHP_POINT)
+                }
+                else if (sp.ShapefileType == ShpfileType.SHP_POINT)
                 {
                     pointStack.Push(sp);
                 }
                 else if (sp.ShapefileType == ShpfileType.SHP_POLYGON)
                 {
                     polygonStack.Push(sp);
-                } else
+                }
+                else
                 {
                     MessageBox.Show("Invalid Shapetype.");
-                    return; 
+                    return;
                 }
                 //fileStack.Push(f);
                 //MessageBox.Show(f)
             }
 
-          
-
-            if (polylineStack.Count>0) mergeFile(polylineStack);
-            if (pointStack.Count>0) mergeFile(pointStack);
-            if (polygonStack.Count>0) mergeFile(polygonStack);
+            if (polylineStack.Count > 0) mergeStackFile(polylineStack);
+            if (pointStack.Count > 0) mergeStackFile(pointStack);
+            if (polygonStack.Count > 0) mergeStackFile(polygonStack);
 
         }
+            
 
-        public void mergeFile(System.Collections.Stack fileStack)
+        public void mergeStackFile(System.Collections.Stack fileStack)
         {
             Shapefile sf = (Shapefile)fileStack.Pop();
             Shapefile sf2 = new Shapefile();
@@ -602,6 +641,32 @@ namespace UsePanels
             
             // save if needed
             string filename = @"D:\shp\NorthDakota\merged_"+sf.ShapefileType+"_"+tString + ".shp";
+            sf.SaveAs(filename, null);
+            AddLayerToMap(filename);
+
+        }
+
+        public void mergeQueueFile(System.Collections.Queue fileQueue)
+        {
+            Shapefile sf = (Shapefile)fileQueue.Dequeue();
+            Shapefile sf2 = new Shapefile();
+            while (fileQueue.Count > 0)
+            {
+                sf2 = (Shapefile)fileQueue.Dequeue();
+                if (sf != null)
+                {
+                    sf = mergeShapefile(sf, sf2);
+                }
+
+            }
+            DateTime now = DateTime.Now;
+
+            string tString = now.ToString("yyyy'_'MM'_'dd'_'HH':'mm':'ss").Replace(":", "_").Replace(" ", "_");
+
+            // MessageBox.Show(tString);
+
+            // save if needed
+            string filename = @"D:\shp\NorthDakota\merged_" + sf.ShapefileType + "_" + tString + ".shp";
             sf.SaveAs(filename, null);
             AddLayerToMap(filename);
 
