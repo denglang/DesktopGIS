@@ -550,16 +550,7 @@ namespace UsePanels
             //    sf = mergeShapefile(sf,sf2); 
             //}
 
-            //DateTime now = DateTime.Now;
-
-            //string tString = now.ToString("yyyy'_'MM'_'dd'_'HH':'mm':'ss").Replace(":", "_").Replace(" ", "_");
-
-            //// MessageBox.Show(tString);
-
-            //// save if needed
-            //string filename = @"D:\shp\NorthDakota\merged_" + sf.ShapefileType + "_" + tString + ".shp";
-            //sf.SaveAs(filename, null);
-            //AddLayerToMap(filename);
+           
         }
         private void btnMergeShapefiles_Click(object sender, EventArgs e)
         {
@@ -688,7 +679,8 @@ namespace UsePanels
             Shapefile sf = sp1.Merge(false, sp2, false);
             return sf;
             //axMap1.AddLayer(sf, true);
-            // save if needed
+            //
+
            // string filename = @"D:\shp\merged.shp";
           //  sf.SaveAs(filename, null);
            // AddLayerToMap(filename);
@@ -1881,6 +1873,7 @@ namespace UsePanels
                 sf.SelectNone();
                 axMap1.Redraw();
             }
+            dataGridView1.ClearSelection();
         }
         private void contextMenuStrip2_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -2591,13 +2584,25 @@ namespace UsePanels
             axMap1.Projection = tkMapProjection.PROJECTION_GOOGLE_MERCATOR;
             //axMap1.SendMouseDown = true;
             //axMap1.CursorMode = tkCursorMode.cmNone;
-           // axMap1.MouseDownEvent += AxMap1MouseDownEvent3;  // change MapEvents to axMap1
-            axMap1.SendSelectBoxFinal = true;
-           
-            axMap1.SelectBoxFinal += AxMap1SelectBoxFinal;
-            axMap1.MapUnits = tkUnitsOfMeasure.umMeters;
-            //axMap1.CurrentScale = 50000;
-            axMap1.CursorMode = tkCursorMode.cmSelection;
+            // axMap1.MouseDownEvent += AxMap1MouseDownEvent3;  // change MapEvents to axMap1
+            Shapefile sf = new Shapefile();
+            int layerHandle = axMap1.get_LayerHandle(0);
+            sf = axMap1.get_Shapefile(layerHandle);
+            if (!sf.StartEditingShapes(true, null))
+            {
+                MessageBox.Show("Failed to start edit mode: " + sf.Table.ErrorMsg[sf.LastErrorCode]);
+            }
+            else
+            {
+                sf.UseQTree = true;
+                //sf.Labels.Generate("[Name]", tkLabelPositioning.lpCentroid, false);
+                axMap1.AddLayer(sf, true);
+                axMap1.SendSelectBoxFinal = true;
+                axMap1.SelectBoxFinal += AxMap1SelectBoxFinal; // change MapEvents to axMap1
+                axMap1.MapUnits = tkUnitsOfMeasure.umMeters;
+                //axMap1.CurrentScale = 50000;
+                axMap1.CursorMode = tkCursorMode.cmSelection;
+            }
         }
 
         void AxMap1SelectBoxFinal(object sender, _DMapEvents_SelectBoxFinalEvent e)
@@ -2635,19 +2640,33 @@ namespace UsePanels
                         if (selectedShapes == null) return;
                         for (int i = 0; i < selectedShapes.Length; i++)
                         {
-                            sf.set_ShapeSelected(selectedShapes[i], true);
-                        //dataGridView1.SelectedRows[selectedShapes[i]];
+                            sf.set_ShapeSelected(selectedShapes[i], true);                       
+                       
                         }
                     }
-               
+                panel1.Show(); //need to show attribute table before set selection. 
+                moveSelectedRowstoTop_dataGridView(sf);
                 axMap1.Redraw();
                 
                 // }
             }
            
-            MessageBox.Show(sf.NumSelected.ToString());
-            axMap1.SelectBoxFinal -= AxMap1SelectBoxFinal;
-            axMap1.CursorMode = tkCursorMode.cmPan;
+            //MessageBox.Show(sf.NumSelected.ToString());
+            //axMap1.SelectBoxFinal -= AxMap1SelectBoxFinal;
+            //axMap1.CursorMode = tkCursorMode.cmPan;
+        }
+
+        void moveSelectedRowstoTop_dataGridView(Shapefile sf)
+        {
+            for (int i = 0; i < sf.NumShapes; i++)
+            {
+                
+                if (sf.ShapeSelected[i] == true)
+                {
+                    dataGridView1.Rows[i].Selected = true;
+                    dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.SelectedRows[0].Index;
+                }
+            }
         }
         private void AxMap1MouseDownEvent3(object sender, _DMapEvents_MouseDownEvent e)
         {
@@ -3072,6 +3091,39 @@ namespace UsePanels
             else MessageBox.Show("No layers in map"); return;            
         }
 
-       
+        private void proToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void proToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            GeoProjection proj = new GeoProjection();
+
+            // EPSG code
+            //proj.ImportFromEPSG(4326);  // WGS84
+            proj.ImportFromEPSG(26915); //utm15N
+
+           
+            Shapefile sp = new Shapefile();
+            Shapefile spProjected = new Shapefile();
+
+            int handle = getLayerHandle();
+
+            sp = axMap1.get_Shapefile(handle);
+
+            int countProj = 0;
+            spProjected = sp.Reproject(proj, ref countProj);
+
+            DateTime now = DateTime.Now;
+
+            string tString = now.ToString("yyyy'_'MM'_'dd'_'HH':'mm':'ss").Replace(":", "_").Replace(" ", "_");
+
+            string fileName = @"D:\shp\reprojected"+tString+".shp";
+
+            sp.SaveAs(fileName);
+            AddLayerToMap(fileName);
+
+        }
     }
 }

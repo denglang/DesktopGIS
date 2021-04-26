@@ -100,6 +100,7 @@
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.lstAttributes = new System.Windows.Forms.ListBox();
             this.btnMergeShapefiles = new System.Windows.Forms.Button();
+            this.proToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axMap1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -539,9 +540,10 @@
             this.changeLineSymbolToolStripMenuItem,
             this.moveLayerToolStripMenuItem,
             this.symbologyToolStripMenuItem,
-            this.propertiesToolStripMenuItem});
+            this.propertiesToolStripMenuItem,
+            this.proToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(184, 246);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(184, 290);
             // 
             // zoomToLayerToolStripMenuItem
             // 
@@ -733,6 +735,13 @@
             this.btnMergeShapefiles.UseVisualStyleBackColor = true;
             this.btnMergeShapefiles.Click += new System.EventHandler(this.btnMergeShapefiles_Click);
             // 
+            // proToolStripMenuItem
+            // 
+            this.proToolStripMenuItem.Name = "proToolStripMenuItem";
+            this.proToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.proToolStripMenuItem.Text = "Reproject2UTM";
+            this.proToolStripMenuItem.Click += new System.EventHandler(this.proToolStripMenuItem_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -842,6 +851,7 @@
         private System.Windows.Forms.ToolStripButton toolStripButtonGoTo;
         private System.Windows.Forms.ToolStripMenuItem exportAllShapefilesInTOCToolStripMenuItem;
         private System.Windows.Forms.Button btnMergeShapefiles;
+        private System.Windows.Forms.ToolStripMenuItem proToolStripMenuItem;
     }
 }
 
