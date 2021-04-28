@@ -15,7 +15,7 @@ namespace MapWinGIS_AE
     public partial class frmSelectByAttributes : Form
     {
         public delegate void SelectByAttributeHandler(Shapefile sf);
-        public event SelectByAttributeHandler SelectByAttribute;
+        //public event SelectByAttributeHandler SelectByAttribute;
 
         Shapefile sf = new Shapefile();
 

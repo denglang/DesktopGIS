@@ -386,7 +386,7 @@ namespace UsePanels
             if (labels != null)
                 labels.Alignment = tkLabelAlignment.laBottomRight;
             //Shapefile sf = new Shapefile();
-            string message = "";
+            //string message = "";
             for (int i = 0; i < axMap1.NumLayers; i++)
             {
                 int layerHandle = axMap1.get_LayerHandle(i);
@@ -2586,7 +2586,7 @@ namespace UsePanels
             //axMap1.CursorMode = tkCursorMode.cmNone;
             // axMap1.MouseDownEvent += AxMap1MouseDownEvent3;  // change MapEvents to axMap1
             Shapefile sf = new Shapefile();
-            int layerHandle = axMap1.get_LayerHandle(0);
+            int layerHandle = getLayerHandle();//axMap1.get_LayerHandle(0);
             sf = axMap1.get_Shapefile(layerHandle);
             if (!sf.StartEditingShapes(true, null))
             {
@@ -2618,7 +2618,7 @@ namespace UsePanels
             //    Shapefile sf = axMap1.get_Shapefile(layerHandle);
             //    sf = axMap1.get_Shapefile(layerHandle);
             //    sf.Identifiable = true;
-            int layerHandle = axMap1.get_LayerHandle(0);
+            int layerHandle = getLayerHandle();//axMap1.get_LayerHandle(0);
             Shapefile sf = axMap1.get_Shapefile(layerHandle);
 
             if (sf != null)
@@ -2638,17 +2638,20 @@ namespace UsePanels
                     {
                         int[] selectedShapes = result as int[];
                         if (selectedShapes == null) return;
+
                         for (int i = 0; i < selectedShapes.Length; i++)
                         {
-                            sf.set_ShapeSelected(selectedShapes[i], true);                       
-                       
+                            sf.set_ShapeSelected(selectedShapes[i], true);
+                        //selectedList[i] = i;
+
                         }
-                    }
-                panel1.Show(); //need to show attribute table before set selection. 
+                    //MessageBox.Show(selectedShapes.Length.ToString());
+                    createAttributeTable(selectedShapes);
+                }
+                              
                 moveSelectedRowstoTop_dataGridView(sf);
                 axMap1.Redraw();
-                
-                // }
+                           
             }
            
             //MessageBox.Show(sf.NumSelected.ToString());
